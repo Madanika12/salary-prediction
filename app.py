@@ -33,7 +33,6 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     skills_df = pd.DataFrame(skills_encoded, columns=mlb.classes_)
     input_df = pd.DataFrame([input_data])
     final_input = pd.concat([input_df, skills_df], axis=1)
-
     for col in model.feature_names_in_:
         if col not in final_input.columns:
             final_input[col] = 0
@@ -45,6 +44,7 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
 st.markdown("""
 <style>
 body { background: #101217; }
+/* Button styling */
 .stButton>button {
     background: linear-gradient(90deg,#005bea,#00c6fb);
     color: white;
@@ -61,6 +61,7 @@ body { background: #101217; }
     background: linear-gradient(90deg,#00c6fb,#005bea);
     box-shadow: 0 4px 16px rgba(0,55,255,0.13);
 }
+/* Card styles */
 .card, .profile-card, .insight-card {
     background: #fff;
     border-radius: 20px;
@@ -68,6 +69,7 @@ body { background: #101217; }
     box-shadow: 0 4px 16px rgba(0, 80, 255, 0.07);
     margin-bottom: 18px;
 }
+/* Result card (salary prediction) */
 .result-card {
     background: linear-gradient(90deg,#005bea 60%,#00c6fb 100%);
     color: white;
@@ -81,15 +83,15 @@ input, select, textarea {
     border-radius: 8px !important;
 }
 .profile-details {
-    margin-top: 20px;
-    color: #fff;
-    font-size: 1.08em;
+    margin-top: 12px;
+    color: #222;
+    font-size: 1.06em;
 }
 .profile-details b {
-    color: #fff;
+    color: #2b2b2b;
 }
 .insight-list {
-    margin-top: 18px;
+    margin-top: 8px;
     color: #222;
     font-size: 1.07em;
 }
@@ -116,6 +118,14 @@ input, select, textarea {
     font-size: 1.25em;
     margin-right: 10px;
 }
+/* Remove extra white box on home */
+.hide-home-card .result-card {
+    background: none !important;
+    color: #fff !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+}
 @media (max-width: 900px) {
     .card, .profile-card, .insight-card { padding: 14px 8px 10px 8px; }
 }
@@ -136,7 +146,10 @@ with st.sidebar:
 
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
-    st.markdown("<div class='result-card'><h2>💼 Salary Prediction Tool</h2><p style='margin-top: -12px;'>Get your personalized salary estimate</p></div>", unsafe_allow_html=True)
+    # Just a heading, no white/blue box!
+    st.markdown("<h2 style='color:#1abcfe; margin-top:16px; margin-bottom:18px; font-size:1.4em; font-weight:800; text-align:center;'>Salary Prediction Tool</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center;color:#bfc5cc;font-size:0.98em;margin-top:-8px;margin-bottom:30px;'>Get your personalized salary estimate</p>", unsafe_allow_html=True)
+
     with st.form("salary_form"):
         with st.container():
             st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -172,16 +185,20 @@ elif st.session_state.page == 'result':
         st.markdown("""
         <div class="profile-card">
             <div class="card-head"><span class="icon">🎯</span>Your Profile</div>
+            <div class='profile-details'>
+                <b>Position:</b> {position}<br>
+                <b>Experience:</b> {experience}<br>
+                <b>Location:</b> {location}<br>
+                <b>Education:</b> {education}
+            </div>
         </div>
-        """, unsafe_allow_html=True)
-        st.markdown(
-            f"""<div class='profile-details'>
-<b>Position:</b> {st.session_state.user_inputs.get('Position', '')}<br>
-<b>Experience:</b> {st.session_state.user_inputs.get('Experience', '')}<br>
-<b>Location:</b> {st.session_state.user_inputs.get('Location', '')}<br>
-<b>Education:</b> {st.session_state.user_inputs.get('Education', '')}
-</div>
-""", unsafe_allow_html=True)
+        """.format(
+            position=st.session_state.user_inputs.get('Position', ''),
+            experience=st.session_state.user_inputs.get('Experience', ''),
+            location=st.session_state.user_inputs.get('Location', ''),
+            education=st.session_state.user_inputs.get('Education', '')
+        ), unsafe_allow_html=True)
+
     with col2:
         st.markdown("""
         <div class="insight-card">
