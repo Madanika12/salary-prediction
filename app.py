@@ -175,13 +175,16 @@ if st.session_state.page == 'form':
             go_to_result()
 
 # ---------------------- RESULT PAGE (unchanged) ---------------------- #
+# ... (imports, CSS, and other code remain unchanged)
+
+# ---------------------- RESULT PAGE ---------------------- #
 elif st.session_state.page == 'result':
     st.button("← Back to Form", on_click=go_back_to_form)
 
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
-        <div class="profile-card">
+        <div class="profile-card card">
             <div class="card-head"><span class="icon">🎯</span>Your Profile</div>
             <div class='profile-details'>
                 <b>Position:</b> {position}<br>
@@ -199,7 +202,7 @@ elif st.session_state.page == 'result':
 
     with col2:
         st.markdown("""
-        <div class="insight-card">
+        <div class="insight-card card">
             <div class="card-head"><span class="icon">📊</span>Market Insights</div>
             <div class="insight-list">
                 <div><span class="insight-label">Industry Average:</span> <span class="insight-value">$55,200</span></div>
