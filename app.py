@@ -2,7 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# --- Load model and encoders (replace with your correct paths if needed) ---
+# --- Load model and encoders ---
 model = joblib.load('best_salary_model.pkl')
 label_encoders = joblib.load('label_encoders.pkl')
 mlb = joblib.load('skills_mlb.pkl')
@@ -14,6 +14,8 @@ if 'predicted_salary' not in st.session_state:
     st.session_state.predicted_salary = None
 if 'user_inputs' not in st.session_state:
     st.session_state.user_inputs = {}
+if 'skills_selected' not in st.session_state:
+    st.session_state.skills_selected = []
 
 def go_to_result():
     st.session_state.page = 'result'
@@ -40,12 +42,11 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     predicted = model.predict(final_input)[0]
     return round(predicted, 2)
 
-# --- Custom CSS for clean look and contrast ---
+# --- Custom CSS ---
 st.markdown("""
 <style>
 body { background: #f9fbfd; }
 .stApp { background: #f9fbfd; }
-h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
 .stButton>button, .stDownloadButton>button {
     background: #38c6ff !important;
     color: white !important;
@@ -67,7 +68,6 @@ h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
     margin: 0 auto 30px auto;
     max-width: 620px;
 }
-.input-card { padding: 0px 0 30px 0 !important; }
 .form-section-title {
     background: #f4faff;
     color: #13b7ff;
@@ -77,6 +77,9 @@ h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
     padding: 22px 36px 12px 36px;
     margin-bottom: 8px;
     letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 .form-section-subtitle {
     color: #9bbbd4;
@@ -93,15 +96,16 @@ h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
 .skill-badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 18px;
+    gap: 16px 18px;
     margin-bottom: 8px;
+    margin-top: 12px;
 }
 .skill-badge {
     background: #f4faff;
     color: #13b7ff;
-    padding: 8px 22px;
+    padding: 10px 22px;
     border-radius: 18px;
-    font-size: 1em;
+    font-size: 1.08em;
     font-weight: 600;
     margin-bottom: 2px;
     margin-right: 0px;
@@ -109,10 +113,12 @@ h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
     cursor: pointer;
     transition: 0.18s;
     outline: none;
+    border: 2px solid #f4faff;
 }
 .skill-badge.selected, .skill-badge:hover {
     background: #13b7ff;
     color: #fff;
+    border: 2px solid #13b7ff;
 }
 .result-header {
     background: #13b7ff;
@@ -222,14 +228,11 @@ label[style*="background"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ---- HEADER ----
-st.markdown("<h1 style='margin-bottom: 34px;'>Salary Predictor</h1>", unsafe_allow_html=True)
-
 # ---- FORM PAGE ----
 if st.session_state.page == 'form':
     st.markdown("""
     <div class="input-card">
-        <div class="form-section-title">💼 Salary Prediction Form</div>
+        <div class="form-section-title"><span style="font-size:1.2em;">💼</span> Salary Prediction Form</div>
         <div class="form-section-subtitle">
             Please fill in your details below
         </div>
@@ -244,24 +247,42 @@ if st.session_state.page == 'form':
         education_level = cols2[1].selectbox("Education Level", label_encoders['education_level'].classes_, key="edu")
         company_size = st.selectbox("Company Size", label_encoders['company_size'].classes_, key="comp_size")
 
-        # --- Skills & Technologies as badges ---
+        # --- Skills & Technologies: dropdown and clickable badges ---
         st.markdown('<div class="form-section-title" style="font-size:1.18em;margin-bottom:7px;margin-top:20px;"><span class="icon">&lt;/&gt;</span>Skills & Technologies</div>', unsafe_allow_html=True)
-        skills_selected = st.multiselect("", mlb.classes_, key="skills")
-        # Show badges (visual only)
-        st.markdown('<div class="skill-badges">' + ''.join(
-            [f'<span class="skill-badge{" selected" if skill in skills_selected else ""}">{skill}</span>' for skill in mlb.classes_]
-        ) + '</div>', unsafe_allow_html=True)
+        
+        # Dropdown for skills (optional)
+        dropdown_selected = st.multiselect(
+            "Choose options", mlb.classes_, default=st.session_state.skills_selected, key="skills_dropdown"
+        )
+
+        # Badge selector (clickable using Streamlit buttons in columns)
+        badge_cols = st.columns(4)
+        skill_badge_clicked = [False] * len(mlb.classes_)
+        for i, skill in enumerate(mlb.classes_):
+            col = badge_cols[i % 4]
+            if skill in st.session_state.skills_selected:
+                if col.button(skill, key=f"badge_{skill}", help="Click to deselect", use_container_width=True):
+                    st.session_state.skills_selected.remove(skill)
+            else:
+                if col.button(skill, key=f"badge_{skill}", help="Click to select", use_container_width=True):
+                    st.session_state.skills_selected.append(skill)
+        # Sync dropdown and badge selections
+        if set(dropdown_selected) != set(st.session_state.skills_selected):
+            st.session_state.skills_selected = dropdown_selected
+
         st.markdown("</div>", unsafe_allow_html=True)
         submitted = st.form_submit_button("Get Salary Prediction")
         if submitted:
-            salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_selected)
+            # Make sure to use only unique and sorted skills
+            skills = sorted(list(set(st.session_state.skills_selected)))
+            salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills)
             st.session_state.predicted_salary = salary
             st.session_state.user_inputs = {
                 'Position': job_title,
                 'Experience': years_of_experience,
                 'Location': location,
                 'Education': education_level,
-                'Skills': skills_selected
+                'Skills': skills
             }
             go_to_result()
     st.markdown("</div>", unsafe_allow_html=True)
