@@ -1,3 +1,4 @@
+# ... (your other imports and code above remain unchanged)
 import streamlit as st
 import joblib
 import pandas as pd
@@ -44,95 +45,47 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
 st.markdown("""
 <style>
 body { background: #101217; }
-/* Button styling */
-.stButton>button {
-    background: linear-gradient(90deg,#005bea,#00c6fb);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.65em 1.7em;
-    font-weight: bold;
-    font-size: 1.06em;
-    margin-top: 0.8em;
-    transition: 0.3s;
-    box-shadow: 0 2px 8px rgba(0,40,120,0.05);
-}
-.stButton>button:hover {
-    background: linear-gradient(90deg,#00c6fb,#005bea);
-    box-shadow: 0 4px 16px rgba(0,55,255,0.13);
-}
-/* Card styles */
-.card, .profile-card, .insight-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 24px 24px 18px 24px;
-    box-shadow: 0 4px 16px rgba(0, 80, 255, 0.07);
-    margin-bottom: 18px;
-}
-/* Result card (salary prediction) */
-.result-card {
-    background: linear-gradient(90deg,#005bea 60%,#00c6fb 100%);
-    color: white;
-    padding: 34px 20px 26px 20px;
-    border-radius: 16px;
+.header-main {
+    max-width: 600px;
+    margin: 42px auto 30px auto;
+    padding: 0;
+    border-radius: 22px;
     text-align: center;
-    margin-bottom: 30px;
-    box-shadow: 0 6px 20px rgba(0, 80, 255, 0.15);
 }
-input, select, textarea {
-    border-radius: 8px !important;
+.header-box {
+    background: linear-gradient(90deg, #005bea 0%, #00c6fb 100%);
+    border-radius: 22px;
+    padding: 32px 0 25px 0;
+    box-shadow: 0 8px 40px 0 rgba(0,40,120,0.13);
+    margin-bottom: 0;
 }
-.profile-details {
-    margin-top: 12px;
-    color: #222;
-    font-size: 1.06em;
+.header-title {
+    color: #fff;
+    font-size: 2.2em;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    margin-bottom: 12px;
+    margin-top: 0;
+    text-shadow: 0 2px 18px rgba(0,170,255,0.12);
 }
-.profile-details b {
-    color: #2b2b2b;
-}
-.insight-list {
-    margin-top: 8px;
-    color: #222;
-    font-size: 1.07em;
-}
-.insight-list .insight-label {
-    color: #7a7a7a;
-    font-weight: 500;
-}
-.insight-list .insight-value {
-    color: #111;
-    font-weight: 600;
-}
-.insight-list .high { color: #1aa260; font-weight: bold;}
-.insight-list .veryhigh { color: #1a56e0; font-weight: bold;}
-/* Icon and heading in cards */
-.card-head {
-    display: flex;
-    align-items: center;
+.header-desc {
+    color: #e6f4ff;
     font-size: 1.08em;
-    font-weight: 700;
-    color: #1abcfe;
-    margin-bottom: 10px;
+    font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 0;
+    letter-spacing: 0.003em;
 }
-.card-head .icon {
-    font-size: 1.25em;
-    margin-right: 10px;
-}
-/* Remove extra white box on home */
-.hide-home-card .result-card {
-    background: none !important;
-    color: #fff !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin-bottom: 0 !important;
-}
-@media (max-width: 900px) {
-    .card, .profile-card, .insight-card { padding: 14px 8px 10px 8px; }
+@media (max-width: 700px) {
+    .header-main { max-width: 96vw; }
+    .header-box { padding: 16px 0 12px 0; }
+    .header-title { font-size: 1.25em; }
+    .header-desc { font-size: 0.99em; }
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ----------- Sidebar -----------
+# ----------- Sidebar (remains unchanged)
 with st.sidebar:
     st.image("https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-salary-global-business-flatart-icons-outline-flatarticons.png", width=50)
     st.title("Salary Predictor")
@@ -146,9 +99,18 @@ with st.sidebar:
 
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
-    # Just a heading, no white/blue box!
-    st.markdown("<h2 style='color:#1abcfe; margin-top:16px; margin-bottom:18px; font-size:1.4em; font-weight:800; text-align:center;'>Salary Prediction Tool</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center;color:#bfc5cc;font-size:0.98em;margin-top:-8px;margin-bottom:30px;'>Get your personalized salary estimate</p>", unsafe_allow_html=True)
+    # New header: professional, in a colored box, no empty white box.
+    st.markdown("""
+    <div class="header-main">
+      <div class="header-box">
+        <div class="header-title">Salary Prediction Tool</div>
+        <div class="header-desc">
+            Get your personalized salary estimate instantly.<br>
+            Enter your details below to see your market value!
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.form("salary_form"):
         with st.container():
@@ -176,7 +138,7 @@ if st.session_state.page == 'form':
             }
             go_to_result()
 
-# ---------------------- RESULT PAGE ---------------------- #
+# ---------------------- RESULT PAGE (unchanged) ---------------------- #
 elif st.session_state.page == 'result':
     st.button("← Back to Form", on_click=go_back_to_form)
 
