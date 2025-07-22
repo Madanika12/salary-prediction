@@ -115,11 +115,11 @@ if st.session_state.page == 'form':
     with st.form("salary_form"):
         with st.container():
             st.markdown("<div class='card'>", unsafe_allow_html=True)
-            job_title = st.selectbox("Job Title", label_encoders['job_title'].classes_)
-            years_of_experience = st.number_input("Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
-            location = st.selectbox("Location", label_encoders['location'].classes_)
-            education_level = st.selectbox("Education Level", label_encoders['education_level'].classes_)
-            company_size = st.selectbox("Company Size", label_encoders['company_size'].classes_)
+            job_title = st.selectbox("🏢Job Title", label_encoders['job_title'].classes_)
+            years_of_experience = st.number_input("⏳Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
+            location = st.selectbox("📍Location", label_encoders['location'].classes_)
+            education_level = st.selectbox("🎓Education Level", label_encoders['education_level'].classes_)
+            company_size = st.selectbox("🏢Company Size", label_encoders['company_size'].classes_)
             skills_list = st.multiselect(
                 "Select Your Skills",
                 mlb.classes_,
