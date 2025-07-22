@@ -174,22 +174,34 @@ if st.session_state.page == 'form':
             }
             go_to_result()
 
-# ---------------------- RESULT PAGE (unchanged) ---------------------- #
-# ... (imports, CSS, and other code remain unchanged)
-
 # ---------------------- RESULT PAGE ---------------------- #
-# ... (imports, CSS, and other code remain unchanged)
+# ... (your imports, CSS, and other code remain unchanged)
 
 # ---------------------- RESULT PAGE ---------------------- #
 elif st.session_state.page == 'result':
     st.button("← Back to Form", on_click=go_back_to_form)
 
-    col1, col2 = st.columns(2)
+    # Profile and Insights boxes side by side
+    col1, col2 = st.columns([1, 1], gap="large")
     with col1:
         st.markdown("""
-        <div class="profile-card card" style="background:#fff; border-radius:20px; box-shadow:0 4px 24px rgba(0,80,255,0.09); padding:24px; margin-bottom:18px; color:#222;">
-            <div class="card-head" style="color:#1abcfe; font-weight:700; margin-bottom:10px;"><span class="icon">🎯</span>Your Profile</div>
-            <div class='profile-details' style="font-size:1.08em;">
+        <div style="
+            background:#fff;
+            border-radius:22px;
+            box-shadow:0 4px 24px rgba(0,80,255,0.10);
+            padding:28px 26px 18px 26px;
+            margin-bottom:20px;
+            color:#222;
+            min-width:260px;
+            min-height:160px;
+            display:flex;
+            flex-direction:column;
+            align-items:flex-start;">
+            <div style="color:#1abcfe; font-weight:700; margin-bottom:12px; font-size:1.08em;">
+                <span style="font-size:1.1em;">🎯</span>
+                <span style="color:#1abcfe; font-weight:700;">Your Profile</span>
+            </div>
+            <div style="font-size:1.07em; margin-left:3px;">
                 <b>Position:</b> {position}<br>
                 <b>Experience:</b> {experience}<br>
                 <b>Location:</b> {location}<br>
@@ -205,23 +217,54 @@ elif st.session_state.page == 'result':
 
     with col2:
         st.markdown("""
-        <div class="insight-card card" style="background:#fff; border-radius:20px; box-shadow:0 4px 24px rgba(0,80,255,0.09); padding:24px; margin-bottom:18px; color:#222;">
-            <div class="card-head" style="color:#1abcfe; font-weight:700; margin-bottom:10px;"><span class="icon">📊</span>Market Insights</div>
-            <div class="insight-list" style="font-size:1.08em;">
-                <div><span class="insight-label"><b>Industry Average:</b></span> $55,200</div>
-                <div><span class="insight-label"><b>Top 10% Earners:</b></span> $87,000</div>
-                <div><span class="insight-label"><b>Growth Potential:</b></span> <span style='color:#1aa260;font-weight:bold;'>High</span></div>
-                <div><span class="insight-label"><b>Demand Level:</b></span> <span style='color:#1a56e0;font-weight:bold;'>Very High</span></div>
+        <div style="
+            background:#fff;
+            border-radius:22px;
+            box-shadow:0 4px 24px rgba(0,80,255,0.10);
+            padding:28px 26px 18px 26px;
+            margin-bottom:20px;
+            color:#222;
+            min-width:260px;
+            min-height:160px;
+            display:flex;
+            flex-direction:column;
+            align-items:flex-start;">
+            <div style="color:#1abcfe; font-weight:700; margin-bottom:12px; font-size:1.08em;">
+                <span style="font-size:1.1em;">📊</span>
+                <span style="color:#1abcfe; font-weight:700;">Market Insights</span>
+            </div>
+            <div style="font-size:1.07em; margin-left:3px;">
+                <b>Industry Average:</b> $55,200<br>
+                <b>Top 10% Earners:</b> $87,000<br>
+                <b>Growth Potential:</b> <span style='color:#1aa260;font-weight:700;'>High</span><br>
+                <b>Demand Level:</b> <span style='color:#1a56e0;font-weight:700;'>Very High</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
+    # Salary Prediction in a box below
     st.markdown(f"""
-        <div class="result-card">
-            <h2 style="color:#16C60C;"><span style="font-size:1.4em;">💲</span> Salary Prediction</h2>
-            <h1 style="margin-bottom: 0.2em;">${st.session_state.predicted_salary:,.0f}</h1>
-            <p style="font-size:1.15em;margin-top:0.2em;">Estimated Annual Salary</p>
-            <p><b>${st.session_state.predicted_salary * 0.85:,.0f}</b> Low — 
-               <b>${st.session_state.predicted_salary * 1.15:,.0f}</b> High</p>
+        <div style="
+            background:#fff;
+            border-radius:22px;
+            box-shadow:0 4px 24px rgba(0,80,255,0.10);
+            padding:32px 24px 28px 24px;
+            margin:34px auto 0 auto;
+            color:#222;
+            max-width:480px;
+            text-align:center;">
+            <h2 style="color:#16C60C; margin-bottom:18px;">
+                <span style="font-size:1.3em;">💲</span> Salary Prediction
+            </h2>
+            <h1 style="margin-bottom: 0.2em; font-size:2.4em; color:#222;">
+                ${st.session_state.predicted_salary:,.0f}
+            </h1>
+            <div style="font-size:1.17em; color:#222; margin-bottom:10px;">
+                Estimated Annual Salary
+            </div>
+            <div style="font-size:1.08em;">
+                <b>${st.session_state.predicted_salary * 0.85:,.0f}</b> Low — 
+                <b>${st.session_state.predicted_salary * 1.15:,.0f}</b> High
+            </div>
         </div>
     """, unsafe_allow_html=True)
