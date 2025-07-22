@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import pandas as pd
+import plotly.graph_objects as go
 
 # Load model and encoders
 model = joblib.load('best_salary_model.pkl')
@@ -109,7 +110,11 @@ if st.session_state.page == 'form':
 
         submitted = st.form_submit_button("📊 Predict My Salary")
         if submitted:
-            salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_list)
+            with st.spinner("🔍 Predicting your salary..."):
+                salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_list)
+
+            st.toast("✅ Prediction successful!", icon="💰")
+
             st.session_state.predicted_salary = salary
             st.session_state.user_inputs = {
                 'Position': job_title,
@@ -153,3 +158,40 @@ elif st.session_state.page == 'result':
             <p><b>Demand Level:</b> <span style='color:blue; font-weight:bold;'>Very High</span></p>
         </div>
         """, unsafe_allow_html=True)
+
+    # -------- Plotly Bar Chart --------
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<div class='card'><h4>📉 Salary Comparison Chart</h4></div>", unsafe_allow_html=True)
+
+    comparison_chart = go.Figure()
+
+    comparison_chart.add_trace(go.Bar(
+        x=['Your Prediction'],
+        y=[st.session_state.predicted_salary],
+        name='Predicted',
+        marker_color='indigo'
+    ))
+    comparison_chart.add_trace(go.Bar(
+        x=['Industry Average'],
+        y=[55200],
+        name='Industry Avg',
+        marker_color='gray'
+    ))
+    comparison_chart.add_trace(go.Bar(
+        x=['Top 10% Earners'],
+        y=[87000],
+        name='Top 10%',
+        marker_color='green'
+    ))
+
+    comparison_chart.update_layout(
+        barmode='group',
+        height=400,
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=30, r=30, t=30, b=30),
+        yaxis_title="Salary ($)",
+        font=dict(size=14)
+    )
+
+    st.plotly_chart(comparison_chart, use_container_width=True)
