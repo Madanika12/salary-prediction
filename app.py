@@ -99,25 +99,18 @@ if st.session_state.page == 'form':
     with st.form("salary_form"):
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.markdown("### 🔍 Provide Your Details", unsafe_allow_html=True)
-
         st.markdown("<span style='color:#007fff'><b>🧑‍💻 Job Title</b></span>", unsafe_allow_html=True)
         job_title = st.selectbox("", label_encoders['job_title'].classes_)
-
         st.markdown("<span style='color:#007fff'><b>⏳ Years of Experience</b></span>", unsafe_allow_html=True)
         years_of_experience = st.number_input("", 0, 50, 2)
-
         st.markdown("<span style='color:#007fff'><b>📍 Location</b></span>", unsafe_allow_html=True)
         location = st.selectbox("", label_encoders['location'].classes_)
-
         st.markdown("<span style='color:#007fff'><b>🎓 Education Level</b></span>", unsafe_allow_html=True)
         education_level = st.selectbox("", label_encoders['education_level'].classes_)
-
         st.markdown("<span style='color:#007fff'><b>🏢 Company Size</b></span>", unsafe_allow_html=True)
         company_size = st.selectbox("", label_encoders['company_size'].classes_)
-
         st.markdown("<span style='color:#007fff'><b>🛠️ Select Your Skills</b></span>", unsafe_allow_html=True)
         skills_list = st.multiselect("", mlb.classes_)
-
         st.markdown("</div>", unsafe_allow_html=True)
 
         submitted = st.form_submit_button("📊 Predict My Salary")
