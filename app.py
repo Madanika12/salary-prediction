@@ -77,7 +77,6 @@ with st.form("salary_form"):
 # ----------------- Prediction -----------------
 if submitted:
     try:
-        # Encode input
         input_data = {
     'job_title': label_encoders['job_title'].transform([job_title])[0],
     'years_of_experience': years_of_experience,
