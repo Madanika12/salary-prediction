@@ -133,35 +133,6 @@ body { background: #101217; }
 }
 </style>
 """, unsafe_allow_html=True)
-
-# ----------- Sidebar (unchanged) -----------
-with st.sidebar:
-    st.image("https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-salary-global-business-flatart-icons-outline-flatarticons.png", width=50)
-    st.title("Salary Predictor")
-    st.caption("Estimate your market value instantly. Enter your profile, skills and get an AI-powered salary prediction.")
-    st.markdown("---")
-    st.markdown("### 🧭 Navigation")
-    selected = st.radio(
-        "Go to",
-        options=["Home", "Result"],
-        index=0 if st.session_state.page == "form" else 1,
-        key="sidebar_nav",
-        label_visibility="collapsed",
-        horizontal=False,
-    )
-    if selected == "Home" and st.session_state.page != "form":
-        st.session_state.page = "form"
-        st.experimental_rerun()
-    elif selected == "Result" and st.session_state.page != "result":
-        st.session_state.page = "result"
-        st.experimental_rerun()
-    st.markdown("---")
-    st.info("**Pro tip:** Select your actual skills for the best results.")
-    st.markdown(
-        "<div style='font-size: 0.95em; color: #888;'>Made with ❤️ using Streamlit.</div>",
-        unsafe_allow_html=True
-    )
-
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
     st.markdown("""
