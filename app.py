@@ -1,4 +1,3 @@
-# ... (your other imports and code above remain unchanged)
 import streamlit as st
 import joblib
 import pandas as pd
@@ -42,16 +41,12 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     return round(predicted, 2)
 
 # ----------- Custom CSS -----------
-# ... (keep your imports and previous code unchanged above)
-
-# ----------- Custom CSS -----------
 st.markdown("""
 <style>
 body { background: #101217; }
 .header-main {
     max-width: 600px;
     margin: 42px auto 30px auto;
-    padding: 0;
     border-radius: 22px;
     text-align: center;
     position: relative;
@@ -95,18 +90,77 @@ body { background: #101217; }
     margin-bottom: 0;
     letter-spacing: 0.003em;
 }
+.result-cards-row {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-top: 18px;
+}
+.card-box {
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 4px 24px rgba(0,80,255,0.10);
+    padding: 28px 26px 18px 26px;
+    color: #222;
+    min-width: 260px;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+@media (max-width: 900px) {
+    .result-cards-row { flex-direction: column; gap: 12px; align-items:center;}
+    .card-box {width:90vw; min-width:0;}
+}
 @media (max-width: 700px) {
     .header-main { max-width: 96vw; }
     .header-box { padding: 16px 0 12px 0; }
     .header-title { font-size: 1.25em; }
     .header-desc { font-size: 0.99em; }
     .header-box .page-title { left: 12px; top: 8px; font-size: 0.93em; }
+    .card-box {padding:18px 10px;}
+}
+.salary-prediction-card {
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 4px 24px rgba(0,80,255,0.10);
+    padding: 32px 24px 28px 24px;
+    margin: 34px auto 0 auto;
+    color: #222;
+    max-width: 480px;
+    text-align: center;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ----------- Sidebar (unchanged) -----------
-
+with st.sidebar:
+    st.image("https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-salary-global-business-flatart-icons-outline-flatarticons.png", width=50)
+    st.title("Salary Predictor")
+    st.caption("Estimate your market value instantly. Enter your profile, skills and get an AI-powered salary prediction.")
+    st.markdown("---")
+    st.markdown("### 🧭 Navigation")
+    selected = st.radio(
+        "Go to",
+        options=["Home", "Result"],
+        index=0 if st.session_state.page == "form" else 1,
+        key="sidebar_nav",
+        label_visibility="collapsed",
+        horizontal=False,
+    )
+    if selected == "Home" and st.session_state.page != "form":
+        st.session_state.page = "form"
+        st.experimental_rerun()
+    elif selected == "Result" and st.session_state.page != "result":
+        st.session_state.page = "result"
+        st.experimental_rerun()
+    st.markdown("---")
+    st.info("**Pro tip:** Select your actual skills for the best results.")
+    st.markdown(
+        "<div style='font-size: 0.95em; color: #888;'>Made with ❤️ using Streamlit.</div>",
+        unsafe_allow_html=True
+    )
 
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
@@ -126,13 +180,13 @@ if st.session_state.page == 'form':
     with st.form("salary_form"):
         with st.container():
             st.markdown("<div class='card'>", unsafe_allow_html=True)
-            job_title = st.selectbox("🏢Job Title", label_encoders['job_title'].classes_)
-            years_of_experience = st.number_input("⏳Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
-            location = st.selectbox("📍Location", label_encoders['location'].classes_)
-            education_level = st.selectbox("🎓Education Level", label_encoders['education_level'].classes_)
-            company_size = st.selectbox("🏢Company Size", label_encoders['company_size'].classes_)
+            job_title = st.selectbox("🏢 Job Title", label_encoders['job_title'].classes_)
+            years_of_experience = st.number_input("⏳ Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
+            location = st.selectbox("📍 Location", label_encoders['location'].classes_)
+            education_level = st.selectbox("🎓 Education Level", label_encoders['education_level'].classes_)
+            company_size = st.selectbox("🏢 Company Size", label_encoders['company_size'].classes_)
             skills_list = st.multiselect(
-                "Select Your Skills",
+                "💡 Select Your Skills",
                 mlb.classes_,
                 help="Hold Ctrl (Windows) or Cmd (Mac) to select multiple."
             )
@@ -150,84 +204,47 @@ if st.session_state.page == 'form':
             go_to_result()
 
 # ---------------------- RESULT PAGE ---------------------- #
-# ... (your imports, CSS, and other code remain unchanged)
-
-# ---------------------- RESULT PAGE ---------------------- #
 elif st.session_state.page == 'result':
     st.button("← Back to Form", on_click=go_back_to_form)
 
-    # Profile and Insights boxes side by side
-    col1, col2 = st.columns([1, 1], gap="large")
-    with col1:
-        st.markdown("""
-        <div style="
-            background:#fff;
-            border-radius:22px;
-            box-shadow:0 4px 24px rgba(0,80,255,0.10);
-            padding:28px 26px 18px 26px;
-            margin-bottom:20px;
-            color:#222;
-            min-width:260px;
-            min-height:160px;
-            display:flex;
-            flex-direction:column;
-            align-items:flex-start;">
-            <div style="color:#1abcfe; font-weight:700; margin-bottom:12px; font-size:1.08em;">
-                <span style="font-size:1.1em;">🎯</span>
-                <span style="color:#1abcfe; font-weight:700;">Your Profile</span>
-            </div>
-            <div style="font-size:1.07em; margin-left:3px;">
-                <b>Position:</b> {position}<br>
-                <b>Experience:</b> {experience}<br>
-                <b>Location:</b> {location}<br>
-                <b>Education:</b> {education}
-            </div>
+    # Cards row for profile and market insights
+    st.markdown("""
+    <div class="result-cards-row">
+      <div class="card-box">
+        <div style="color:#1abcfe; font-weight:700; margin-bottom:12px; font-size:1.08em;">
+            <span style="font-size:1.1em;">🎯</span>
+            <span style="color:#1abcfe; font-weight:700;">Your Profile</span>
         </div>
-        """.format(
-            position=st.session_state.user_inputs.get('Position', ''),
-            experience=st.session_state.user_inputs.get('Experience', ''),
-            location=st.session_state.user_inputs.get('Location', ''),
-            education=st.session_state.user_inputs.get('Education', '')
-        ), unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div style="
-            background:#fff;
-            border-radius:22px;
-            box-shadow:0 4px 24px rgba(0,80,255,0.10);
-            padding:28px 26px 18px 26px;
-            margin-bottom:20px;
-            color:#222;
-            min-width:260px;
-            min-height:160px;
-            display:flex;
-            flex-direction:column;
-            align-items:flex-start;">
-            <div style="color:#1abcfe; font-weight:700; margin-bottom:12px; font-size:1.08em;">
-                <span style="font-size:1.1em;">📊</span>
-                <span style="color:#1abcfe; font-weight:700;">Market Insights</span>
-            </div>
-            <div style="font-size:1.07em; margin-left:3px;">
-                <b>Industry Average:</b> $55,200<br>
-                <b>Top 10% Earners:</b> $87,000<br>
-                <b>Growth Potential:</b> <span style='color:#1aa260;font-weight:700;'>High</span><br>
-                <b>Demand Level:</b> <span style='color:#1a56e0;font-weight:700;'>Very High</span>
-            </div>
+        <div style="font-size:1.07em; margin-left:3px;">
+            <b>Position:</b> {position}<br>
+            <b>Experience:</b> {experience}<br>
+            <b>Location:</b> {location}<br>
+            <b>Education:</b> {education}
         </div>
-        """, unsafe_allow_html=True)
+      </div>
+      <div class="card-box">
+        <div style="color:#1abcfe; font-weight:700; margin-bottom:12px; font-size:1.08em;">
+            <span style="font-size:1.1em;">📊</span>
+            <span style="color:#1abcfe; font-weight:700;">Market Insights</span>
+        </div>
+        <div style="font-size:1.07em; margin-left:3px;">
+            <b>Industry Average:</b> $55,200<br>
+            <b>Top 10% Earners:</b> $87,000<br>
+            <b>Growth Potential:</b> <span style='color:#1aa260;font-weight:700;'>High</span><br>
+            <b>Demand Level:</b> <span style='color:#1a56e0;font-weight:700;'>Very High</span>
+        </div>
+      </div>
+    </div>
+    """.format(
+        position=st.session_state.user_inputs.get('Position', ''),
+        experience=st.session_state.user_inputs.get('Experience', ''),
+        location=st.session_state.user_inputs.get('Location', ''),
+        education=st.session_state.user_inputs.get('Education', '')
+    ), unsafe_allow_html=True)
 
     # Salary Prediction in a box below
     st.markdown(f"""
-        <div style="
-            background:#fff;
-            border-radius:22px;
-            box-shadow:0 4px 24px rgba(0,80,255,0.10);
-            padding:32px 24px 28px 24px;
-            margin:34px auto 0 auto;
-            color:#222;
-            max-width:480px;
-            text-align:center;">
+        <div class="salary-prediction-card">
             <h2 style="color:#16C60C; margin-bottom:18px;">
                 <span style="font-size:1.3em;">💲</span> Salary Prediction
             </h2>
