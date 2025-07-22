@@ -178,15 +178,18 @@ if st.session_state.page == 'form':
 # ... (imports, CSS, and other code remain unchanged)
 
 # ---------------------- RESULT PAGE ---------------------- #
+# ... (imports, CSS, and other code remain unchanged)
+
+# ---------------------- RESULT PAGE ---------------------- #
 elif st.session_state.page == 'result':
     st.button("← Back to Form", on_click=go_back_to_form)
 
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("""
-        <div class="profile-card card">
-            <div class="card-head"><span class="icon">🎯</span>Your Profile</div>
-            <div class='profile-details'>
+        <div class="profile-card card" style="background:#fff; border-radius:20px; box-shadow:0 4px 24px rgba(0,80,255,0.09); padding:24px; margin-bottom:18px; color:#222;">
+            <div class="card-head" style="color:#1abcfe; font-weight:700; margin-bottom:10px;"><span class="icon">🎯</span>Your Profile</div>
+            <div class='profile-details' style="font-size:1.08em;">
                 <b>Position:</b> {position}<br>
                 <b>Experience:</b> {experience}<br>
                 <b>Location:</b> {location}<br>
@@ -202,23 +205,23 @@ elif st.session_state.page == 'result':
 
     with col2:
         st.markdown("""
-        <div class="insight-card card">
-            <div class="card-head"><span class="icon">📊</span>Market Insights</div>
-            <div class="insight-list">
-                <div><span class="insight-label">Industry Average:</span> <span class="insight-value">$55,200</span></div>
-                <div><span class="insight-label">Top 10% Earners:</span> <span class="insight-value">$87,000</span></div>
-                <div><span class="insight-label">Growth Potential:</span> <span class="insight-value high">High</span></div>
-                <div><span class="insight-label">Demand Level:</span> <span class="insight-value veryhigh">Very High</span></div>
+        <div class="insight-card card" style="background:#fff; border-radius:20px; box-shadow:0 4px 24px rgba(0,80,255,0.09); padding:24px; margin-bottom:18px; color:#222;">
+            <div class="card-head" style="color:#1abcfe; font-weight:700; margin-bottom:10px;"><span class="icon">📊</span>Market Insights</div>
+            <div class="insight-list" style="font-size:1.08em;">
+                <div><span class="insight-label"><b>Industry Average:</b></span> $55,200</div>
+                <div><span class="insight-label"><b>Top 10% Earners:</b></span> $87,000</div>
+                <div><span class="insight-label"><b>Growth Potential:</b></span> <span style='color:#1aa260;font-weight:bold;'>High</span></div>
+                <div><span class="insight-label"><b>Demand Level:</b></span> <span style='color:#1a56e0;font-weight:bold;'>Very High</span></div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown(f"""
         <div class="result-card">
-            <h2>💲 Salary Prediction</h2>
+            <h2 style="color:#16C60C;"><span style="font-size:1.4em;">💲</span> Salary Prediction</h2>
             <h1 style="margin-bottom: 0.2em;">${st.session_state.predicted_salary:,.0f}</h1>
             <p style="font-size:1.15em;margin-top:0.2em;">Estimated Annual Salary</p>
-            <p><b>${st.session_state.predicted_salary * 0.85:,.0f}</b> <span style="color:#d4ffea;">Low</span> — 
-               <b>${st.session_state.predicted_salary * 1.15:,.0f}</b> <span style="color:#ffe4c2;">High</span></p>
+            <p><b>${st.session_state.predicted_salary * 0.85:,.0f}</b> Low — 
+               <b>${st.session_state.predicted_salary * 1.15:,.0f}</b> High</p>
         </div>
     """, unsafe_allow_html=True)
