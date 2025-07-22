@@ -34,101 +34,93 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     predicted = model.predict(final_input)[0]
     return round(predicted, 2)
 
-# --- Custom CSS for header and dark form card (designs from your references) ---
+# --- Custom CSS for design fix ---
 st.markdown("""
 <style>
-/* Whole background white */
 body, .stApp { background: #fff !important; }
 
 /* Large blue gradient header box */
 .header-main-box {
     background: linear-gradient(90deg, #002642 0%, #005bea 100%);
-    border-radius: 22px;
-    padding: 40px 0 40px 0;
-    margin: 0 0 38px 0;
-    width: 100%;
+    border-radius: 28px;
+    padding: 36px 0 36px 0;
+    margin: 40px auto 38px auto;
+    width: 60vw;
+    min-width: 320px;
+    max-width: 600px;
     text-align: center;
     box-shadow: 0 8px 40px 0 rgba(0,40,120,0.11);
 }
 .header-title {
     color: #1abcfe;
-    font-size: 3em;
+    font-size: 2.6em;
     font-weight: 800;
     letter-spacing: 1px;
     margin-bottom: 0;
     margin-top: 0;
-    text-shadow: 0 2px 18px rgba(0,170,255,0.13);
-}
-@media (max-width: 650px) {
-    .header-main-box { padding: 22px 0; }
-    .header-title { font-size: 2em; }
+    text-shadow: 0 2px 18px rgba(0,170,255,0.10);
 }
 
-/* Form main card - dark */
-.form-dark-card {
+/* FORM CARD */
+.form-dark-mini {
     background: #181b20;
     border: 1.2px solid #292c34;
-    border-radius: 12px;
-    padding: 34px 24px 28px 24px;
-    margin: 18px auto 0 auto;
+    border-radius: 14px;
+    padding: 18px 26px 14px 26px;
+    margin: 0 auto 30px auto;
     width: 100%;
-    max-width: 670px;
-    box-shadow: 0 4px 24px rgba(20,20,20,0.08);
+    max-width: 600px;
+    box-shadow: 0 4px 24px rgba(20,20,20,0.10);
 }
 
-/* Label row flex */
 .form-label-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     gap: 36px;
-    margin-bottom: 7px;
-    margin-top: 8px;
+    margin-bottom: 4px;
+    margin-top: 12px;
 }
+
 .form-label {
+    background: #23242a;
     color: #fff;
-    font-size: 1.06em;
+    font-size: 0.92em;
     font-weight: 600;
     margin-bottom: 2px;
+    margin-top: 0;
+    border-radius: 7px;
+    padding: 5px 17px 5px 13px;
     display: flex;
     align-items: center;
     gap: 7px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.04);
 }
+
 .form-icon {
-    font-size: 1.2em;
+    font-size: 1.16em;
     margin-right: 5px;
     vertical-align: middle;
 }
-.form-input-row {
-    display: flex;
-    gap: 36px;
-    margin-bottom: 17px;
-}
-.form-input-col {
-    flex: 1;
-}
 
-/* Streamlit input tweaks for dark card */
-.form-dark-card .stSelectbox, 
-.form-dark-card .stNumberInput, 
-.form-dark-card .stMultiSelect {
+.stSelectbox, .stNumberInput, .stMultiSelect {
     background: #23242a !important;
     color: #fff !important;
     border-radius: 8px !important;
     border: none !important;
 }
-.form-dark-card .stSelectbox label,
-.form-dark-card .stNumberInput label,
-.form-dark-card .stMultiSelect label {
+.stSelectbox label,
+.stNumberInput label,
+.stMultiSelect label {
     color: #fff !important;
 }
-.form-dark-card .stTextInput input, 
-.form-dark-card .stNumberInput input {
+.stTextInput input, 
+.stNumberInput input {
     background: #23242a !important;
     color: #fff !important;
     border-radius: 8px !important;
 }
-.form-dark-card .stMultiSelect>div>div {
+.stMultiSelect>div>div {
     background: #23242a !important;
     color: #fff !important;
 }
@@ -146,46 +138,6 @@ body, .stApp { background: #fff !important; }
     border: 1.5px solid #1abcfe;
     color: #1abcfe !important;
 }
-
-/* Result card - blue/white */
-.result-card {
-    background: linear-gradient(90deg,#005bea 60%,#00c6fb 100%);
-    color: white;
-    padding: 34px 20px 26px 20px;
-    border-radius: 16px;
-    text-align: center;
-    margin-bottom: 30px;
-    box-shadow: 0 6px 20px rgba(0, 80, 255, 0.15);
-}
-.profile-card, .insight-card {
-    background: #fcfdfe;
-    border-radius: 12px;
-    border: 1px solid #e7f3fd;
-    padding: 18px 18px 10px 18px;
-    margin: 15px 6px 10px 0;
-    font-size: 1em;
-    color: #222;
-}
-.skill-badge {
-    display: inline-block;
-    background: #f2f8fd;
-    color: #1abcfe;
-    border-radius: 17px;
-    padding: 5px 18px;
-    margin: 3px 8px 8px 0;
-    font-weight: 500;
-    font-size: 1em;
-    border: 1px solid #e2f0fb;
-}
-.range-label {
-    color: #eee;
-    font-size: 1em;
-    margin-bottom: 0.3em;
-}
-.range-value {
-    color: #fff;
-    font-weight: 600;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -198,9 +150,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ---------------------- FORM PAGE ---------------------- #
+# -------- FORM PAGE --------
 if st.session_state.page == 'form':
-    st.markdown('<div class="form-dark-card">', unsafe_allow_html=True)
+    st.markdown('<div class="form-dark-mini">', unsafe_allow_html=True)
     with st.form("salary_form"):
         # --- Job Title & Years of Experience ---
         st.markdown(
@@ -216,7 +168,6 @@ if st.session_state.page == 'form':
             job_title = st.selectbox("", label_encoders['job_title'].classes_, key='job_title')
         with col2:
             years_of_experience = st.number_input("", 0, 50, 2, key='yoe')
-
         # --- Location & Education Level ---
         st.markdown(
             """
@@ -231,15 +182,12 @@ if st.session_state.page == 'form':
             location = st.selectbox("", label_encoders['location'].classes_, key='location')
         with col4:
             education_level = st.selectbox("", label_encoders['education_level'].classes_, key='edu')
-
         # --- Company Size ---
         st.markdown('<div class="form-label" style="margin-top:10px;"><span class="form-icon">🏢</span>Company Size</div>', unsafe_allow_html=True)
         company_size = st.selectbox("", label_encoders['company_size'].classes_, key='company')
-
         # --- Skills ---
         st.markdown('<div class="form-label" style="margin-top:10px;"><span class="form-icon">&lt;/&gt;</span>Skills & Technologies</div>', unsafe_allow_html=True)
         skills_list = st.multiselect("", options=mlb.classes_, key="skills")
-
         submitted = st.form_submit_button("Get Salary Prediction")
         if submitted:
             salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_list)
@@ -255,7 +203,7 @@ if st.session_state.page == 'form':
             st.session_state.page = 'result'
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------------------- RESULT PAGE ---------------------- #
+# -------- RESULT PAGE --------
 elif st.session_state.page == 'result':
     st.button("← Back to Form", on_click=lambda: st.session_state.update(page='form'), key="back_form", help="Back to input form", type="secondary")
     st.markdown(f"""
@@ -269,7 +217,6 @@ elif st.session_state.page == 'result':
             <span class="range-label">High Range</span>
         </div>
     """, unsafe_allow_html=True)
-
     col1, col2 = st.columns(2)
     with col1:
         st.markdown('<div class="profile-card">', unsafe_allow_html=True)
