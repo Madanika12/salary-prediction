@@ -10,7 +10,6 @@ mlb = joblib.load("skills_mlb.pkl")
 # ----------------- CSS: Light Blue Text & Font Size -----------------
 st.markdown("""
     <style>
-        /* Light blue for labels and text */
         label, .css-1c7y2kd, .css-1d391kg, .css-16huue1, h3, h4, h5 {
             color: #00AEEF !important;
             font-size: 16px !important;
@@ -77,10 +76,32 @@ with st.form("salary_form"):
 # ----------------- Prediction -----------------
 if submitted:
     try:
+        # Encode input
         input_data = {
-    'job_title': label_encoders['job_title'].transform([job_title])[0],
-    'years_of_experience': years_of_experience,
-    'location': label_encoders['location'].transform([location])[0],
-    'education_level': label_encoders['education_level'].transform([education_level])[0],
-    'company_size': label_encoders['company_size'].transform([company_size])[0]
+            'job_title': label_encoders['job_title'].transform([job_title])[0],
+            'years_of_experience': years_of_experience,
+            'location': label_encoders['location'].transform([location])[0],
+            'education_level': label_encoders['education_level'].transform([education_level])[0],
+            'company_size': label_encoders['company_size'].transform([company_size])[0]
         }
+
+        # Encode skills
+        skills_encoded = mlb.transform([skills_list])
+        skills_df = pd.DataFrame(skills_encoded, columns=mlb.classes_)
+
+        # Merge all inputs
+        input_df = pd.DataFrame([input_data])
+        final_input = pd.concat([input_df, skills_df], axis=1)
+
+        # Handle missing features
+        for col in model.feature_names_in_:
+            if col not in final_input.columns:
+                final_input[col] = 0
+        final_input = final_input[model.feature_names_in_]
+
+        # Predict salary
+        predicted_salary = model.predict(final_input)[0]
+        st.success(f"💰 Estimated Salary: ₹{predicted_salary:,.2f}")
+
+    except Exception as e:
+        st.error(f"⚠️ Error in prediction: {e}")
