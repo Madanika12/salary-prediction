@@ -84,4 +84,4 @@ if submitted:
     'location': label_encoders['location'].transform([location])[0],
     'education_level': label_encoders['education_level'].transform([education_level])[0],
     'company_size': label_encoders['company_size'].transform([company_size])[0]
-}
+        }
