@@ -79,8 +79,9 @@ if submitted:
     try:
         # Encode input
         input_data = {
-            'job_title': label_encoders['job_title'].transform([job_title])[0],
-            'years_of_experience': years_of_experience,
-            'location': label_encoders['location'].transform([location])[0],
-            'education_level': label_encoders['education_level'].transform([education_level])[0],
-            'company_size': label_encoders['company_size']._]()
+    'job_title': label_encoders['job_title'].transform([job_title])[0],
+    'years_of_experience': years_of_experience,
+    'location': label_encoders['location'].transform([location])[0],
+    'education_level': label_encoders['education_level'].transform([education_level])[0],
+    'company_size': label_encoders['company_size'].transform([company_size])[0]
+}
