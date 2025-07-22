@@ -106,32 +106,7 @@ body { background: #101217; }
 """, unsafe_allow_html=True)
 
 # ----------- Sidebar (unchanged) -----------
-with st.sidebar:
-    st.image("https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-salary-global-business-flatart-icons-outline-flatarticons.png", width=50)
-    st.title("Salary Predictor")
-    st.caption("Estimate your market value instantly. Enter your profile, skills and get an AI-powered salary prediction.")
-    st.markdown("---")
-    st.markdown("### 🧭 Navigation")
-    selected = st.radio(
-        "Go to",
-        options=["Home", "Result"],
-        index=0 if st.session_state.page == "form" else 1,
-        key="sidebar_nav",
-        label_visibility="collapsed",
-        horizontal=False,
-    )
-    if selected == "Home" and st.session_state.page != "form":
-        st.session_state.page = "form"
-        st.experimental_rerun()
-    elif selected == "Result" and st.session_state.page != "result":
-        st.session_state.page = "result"
-        st.experimental_rerun()
-    st.markdown("---")
-    st.info("**Pro tip:** Select your actual skills for the best results.")
-    st.markdown(
-        "<div style='font-size: 0.95em; color: #888;'>Made with ❤️ using Streamlit.</div>",
-        unsafe_allow_html=True
-    )
+
 
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
@@ -151,11 +126,11 @@ if st.session_state.page == 'form':
     with st.form("salary_form"):
         with st.container():
             st.markdown("<div class='card'>", unsafe_allow_html=True)
-            job_title = st.selectbox("Job Title", label_encoders['job_title'].classes_)
-            years_of_experience = st.number_input("Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
-            location = st.selectbox("Location", label_encoders['location'].classes_)
-            education_level = st.selectbox("Education Level", label_encoders['education_level'].classes_)
-            company_size = st.selectbox("Company Size", label_encoders['company_size'].classes_)
+            job_title = st.selectbox("🏢Job Title", label_encoders['job_title'].classes_)
+            years_of_experience = st.number_input("⏳Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
+            location = st.selectbox("📍Location", label_encoders['location'].classes_)
+            education_level = st.selectbox("🎓Education Level", label_encoders['education_level'].classes_)
+            company_size = st.selectbox("🏢Company Size", label_encoders['company_size'].classes_)
             skills_list = st.multiselect(
                 "Select Your Skills",
                 mlb.classes_,
