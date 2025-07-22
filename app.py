@@ -38,102 +38,42 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     return round(predicted, 2)
 
 # --- Custom CSS for Blue Modern UI ---
+# --- Custom CSS for Dark Large Header Box ---
 st.markdown("""
 <style>
-body { background: #f8fbff; }
-h1, h2, h3, h4, h5, h6 { color: #1abcfe !important; }
-.blue-card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 3px 16px #e7f3fd;
-    padding: 34px 32px 24px 32px;
-    margin: 30px auto;
+body { background: #11141a; }
+.header-main-box {
+    background: linear-gradient(90deg, #002642 0%, #005bea 100%);
+    border-radius: 22px;
+    padding: 40px 0 40px 0;
+    margin: 0 0 38px 0;
     width: 100%;
-    max-width: 540px;
+    text-align: center;
+    box-shadow: 0 8px 40px 0 rgba(0,40,120,0.11);
 }
-.form-label {
-    font-weight: 600;
+.header-title {
     color: #1abcfe;
-    margin-bottom: 0.2em;
-}
-.form-section {
-    margin-bottom: 18px;
-}
-.stButton>button {
-    background: #1abcfe;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1.1em;
-    padding: 0.7em 0.5em;
-    margin-top: 0.5em;
-    margin-bottom: 0.3em;
-    transition: 0.2s;
-}
-.stButton>button:hover {
-    background: #0fa4da;
-}
-.skill-badge {
-    display: inline-block;
-    background: #f2f8fd;
-    color: #1abcfe;
-    border-radius: 17px;
-    padding: 5px 18px;
-    margin: 3px 8px 8px 0;
-    font-weight: 500;
-    font-size: 1em;
-    border: 1px solid #e2f0fb;
-}
-.header-card {
-    background: #e8f6fe;
-    border-radius: 14px 14px 0 0;
-    padding: 18px 32px;
-    color: #1abcfe;
-    font-weight: 700;
-    font-size: 1.25em;
-    display: flex;
-    align-items: center;
-    margin-bottom: 0;
-}
-.result-main {
-    color: #1abcfe;
-    font-size: 2.4em;
+    font-size: 3em;
     font-weight: 800;
-    margin: 0.2em 0 0.1em 0;
-}
-.range-label {
-    color: #222;
-    font-size: 1em;
-    margin-bottom: 0.3em;
-}
-.range-value {
-    color: #1abcfe;
-    font-weight: 600;
-}
-.profile-card, .insight-card {
-    background: #fcfdfe;
-    border-radius: 12px;
-    border: 1px solid #e7f3fd;
-    padding: 18px 18px 10px 18px;
-    margin: 15px 6px 10px 0;
-    font-size: 1em;
-}
-.back-btn {
-    background: #fff !important;
-    color: #1abcfe !important;
-    border: 1.5px solid #d3eafd !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    margin-bottom: 1.5em !important;
+    letter-spacing: 1px;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-shadow: 0 2px 18px rgba(0,170,255,0.13);
 }
 @media (max-width: 650px) {
-    .blue-card { padding: 16px 6px 16px 6px; }
-    .header-card { padding: 10px 12px; font-size: 1.1em; }
+    .header-main-box { padding: 22px 0; }
+    .header-title { font-size: 2em; }
 }
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<div class="header-main-box">
+    <div class="header-title">
+        Salary Predictor
+    </div>
+</div>
+""", unsafe_allow_html=True)
 # --- Main Title (top left) ---
 st.markdown("<h2 style='color:#1abcfe;font-weight:800;margin-bottom:12px;'>Salary Predictor</h2>", unsafe_allow_html=True)
 
