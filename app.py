@@ -2,11 +2,12 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# --- Load model and encoders (your code here) ---
+# --- Load model and encoders (replace with your correct paths if needed) ---
 model = joblib.load('best_salary_model.pkl')
 label_encoders = joblib.load('label_encoders.pkl')
 mlb = joblib.load('skills_mlb.pkl')
 
+# --- Session State Setup ---
 if 'page' not in st.session_state:
     st.session_state.page = 'form'
 if 'predicted_salary' not in st.session_state:
@@ -39,11 +40,10 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     predicted = model.predict(final_input)[0]
     return round(predicted, 2)
 
-# --- Custom CSS for look & feel inspired by your references ---
+# --- Custom CSS for clean look and contrast ---
 st.markdown("""
 <style>
 body { background: #f9fbfd; }
-header, footer { visibility: hidden; }
 .stApp { background: #f9fbfd; }
 h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
 .stButton>button, .stDownloadButton>button {
@@ -193,6 +193,32 @@ h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
     .profile-market-cols { flex-direction: column; gap: 10px; }
     .profile-box, .market-box { min-width: 0; padding: 17px 7px 7px 7px; }
 }
+/* Fix input field and select colors for contrast */
+input, select, textarea, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
+    background: #fff !important;
+    color: #232a3d !important;
+    border-radius: 8px !important;
+    border: 1.5px solid #dbeafe !important;
+    font-weight: 500 !important;
+}
+.stSelectbox [data-baseweb="select"] .css-1dimb5e-singleValue,
+.stMultiSelect [data-baseweb="select"] .css-1dimb5e-singleValue,
+.stMultiSelect [data-baseweb="select"] .css-12a83d4 {
+    color: #232a3d !important;
+    background: transparent !important;
+}
+label, .stTextInput label, .stSelectbox label, .stMultiSelect label, .stNumberInput label {
+    color: #2563eb !important;
+    background: transparent !important;
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 7px !important;
+}
+label[style*="background"] {
+    background: transparent !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -242,6 +268,12 @@ if st.session_state.page == 'form':
 
 # ---- RESULT PAGE ----
 elif st.session_state.page == 'result':
+    # Salary, low and high range
+    salary = st.session_state.predicted_salary
+    low = salary * 0.85
+    high = salary * 1.15
+    user = st.session_state.user_inputs
+
     st.markdown("""
         <a href="#" onclick="window.location.reload(); return false;" style="text-decoration:none;">
             <button style="margin-bottom:18px;padding:7px 18px;border-radius:7px;background:#fff;border:1px solid #e6f2ff;cursor:pointer;font-size:1em;">
@@ -249,22 +281,23 @@ elif st.session_state.page == 'result':
             </button>
         </a>
     """, unsafe_allow_html=True)
-    st.markdown("""
+    st.markdown(
+        f"""
     <div class="result-card">
         <div class="result-header">
             <span style="font-size:1.22em;">🪙</span>
             Salary Prediction Result
         </div>
         <div class="result-main">
-            <div class="salary">${:,.0f}</div>
+            <div class="salary">${salary:,.0f}</div>
             <div style="color:#9bbbd4;font-size:1.14em;margin-bottom:7px;">Annual Salary Estimate</div>
             <div class="result-range">
                 <div>
-                    <div class="low">${:,.0f}</div>
+                    <div class="low">${low:,.0f}</div>
                     <div class="low-label">Low Range</div>
                 </div>
                 <div>
-                    <div class="high">${:,.0f}</div>
+                    <div class="high">${high:,.0f}</div>
                     <div class="high-label">High Range</div>
                 </div>
             </div>
@@ -272,13 +305,13 @@ elif st.session_state.page == 'result':
         <div class="profile-market-cols">
             <div class="profile-box">
                 <h4><span class="icon">👤</span>Your Profile</h4>
-                <div class="profile-rows"><span class="icon">💼</span>Position <span style="float:right;font-weight:600;">{}</span></div>
-                <div class="profile-rows"><span class="icon">⏱️</span>Experience <span style="float:right;font-weight:600;">{} years</span></div>
-                <div class="profile-rows"><span class="icon">📍</span>Location <span style="float:right;font-weight:600;">{}</span></div>
-                <div class="profile-rows"><span class="icon">🎓</span>Education <span style="float:right;font-weight:600;">{}</span></div>
+                <div class="profile-rows"><span class="icon">💼</span>Position <span style="float:right;font-weight:600;">{user.get('Position','')}</span></div>
+                <div class="profile-rows"><span class="icon">⏱️</span>Experience <span style="float:right;font-weight:600;">{user.get('Experience','')} years</span></div>
+                <div class="profile-rows"><span class="icon">📍</span>Location <span style="float:right;font-weight:600;">{user.get('Location','')}</span></div>
+                <div class="profile-rows"><span class="icon">🎓</span>Education <span style="float:right;font-weight:600;">{user.get('Education','')}</span></div>
                 <div class="profile-rows" style="margin-top:10px;">
                     <div style="font-size:0.96em;color:#9bbbd4;margin-bottom:3px;">Skills</div>
-                    <div>""" + ''.join([f'<span class="skill-badge selected" style="margin:0 6px 6px 0;">{s}</span>' for s in st.session_state.user_inputs.get('Skills', [])]) + """</div>
+                    <div>""" + ''.join([f'<span class="skill-badge selected" style="margin:0 6px 6px 0;">{s}</span>' for s in user.get('Skills', [])]) + """</div>
                 </div>
             </div>
             <div class="market-box">
@@ -295,12 +328,6 @@ elif st.session_state.page == 'result':
             </button>
         </form>
     </div>
-    """.format(
-        st.session_state.predicted_salary,
-        st.session_state.predicted_salary * 0.85,
-        st.session_state.predicted_salary * 1.15,
-        st.session_state.user_inputs.get('Position', ''),
-        st.session_state.user_inputs.get('Experience', ''),
-        st.session_state.user_inputs.get('Location', ''),
-        st.session_state.user_inputs.get('Education', ''),
-    ), unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True
+    )
