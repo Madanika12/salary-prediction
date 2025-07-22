@@ -2,25 +2,22 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# --- Load model and encoders (replace with your correct paths if needed) ---
+# --- Model/Encoders Loading ---
 model = joblib.load('best_salary_model.pkl')
 label_encoders = joblib.load('label_encoders.pkl')
 mlb = joblib.load('skills_mlb.pkl')
 
-# --- Session State Setup ---
+# --- Session State ---
 if 'page' not in st.session_state:
     st.session_state.page = 'form'
 if 'predicted_salary' not in st.session_state:
     st.session_state.predicted_salary = None
 if 'user_inputs' not in st.session_state:
     st.session_state.user_inputs = {}
+if 'selected_skills' not in st.session_state:
+    st.session_state.selected_skills = []
 
-def go_to_result():
-    st.session_state.page = 'result'
-
-def go_back_to_form():
-    st.session_state.page = 'form'
-
+# --- Salary Prediction Logic ---
 def predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_list):
     input_data = {
         'job_title': label_encoders['job_title'].transform([job_title])[0],
@@ -40,317 +37,217 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     predicted = model.predict(final_input)[0]
     return round(predicted, 2)
 
-# --- Custom CSS for look, contrast, and removing empty spaces ---
+# --- Custom CSS for Blue Modern UI ---
 st.markdown("""
 <style>
-body { background: #f9fbfd; }
-.stApp { background: #f9fbfd; }
-h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
-.stButton>button, .stDownloadButton>button {
-    background: #38c6ff !important;
-    color: white !important;
-    border-radius: 8px !important;
-    font-size: 1.1em !important;
-    border: none !important;
-    padding: 0.75em 0 !important;
-    margin-top: 18px;
+body { background: #f8fbff; }
+h1, h2, h3, h4, h5, h6 { color: #1abcfe !important; }
+.blue-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 3px 16px #e7f3fd;
+    padding: 34px 32px 24px 32px;
+    margin: 30px auto;
+    width: 100%;
+    max-width: 540px;
+}
+.form-label {
+    font-weight: 600;
+    color: #1abcfe;
+    margin-bottom: 0.2em;
+}
+.form-section {
+    margin-bottom: 18px;
+}
+.stButton>button {
+    background: #1abcfe;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 0.7em 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.3em;
     transition: 0.2s;
 }
-.stButton>button:hover, .stDownloadButton>button:hover {
-    background: #13b7ff !important;
-}
-.input-card, .result-card {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(22, 170, 255, 0.09);
-    padding: 0px 0 30px 0;
-    margin: 0 auto 30px auto;
-    max-width: 620px;
-}
-.input-card { padding: 0px 0 30px 0 !important; }
-.form-section-title {
-    background: #f4faff;
-    color: #13b7ff;
-    font-weight: 700;
-    font-size: 1.3em;
-    border-radius: 14px 14px 0 0;
-    padding: 22px 36px 12px 36px;
-    margin-bottom: 8px;
-    letter-spacing: 0.02em;
-    display: flex; align-items: center; gap: 10px;
-}
-.form-section-subtitle {
-    color: #9bbbd4;
-    font-size: 1em;
-    margin-bottom: 18px;
-    margin-left: 36px;
-}
-.form-fields {
-    padding: 0 36px;
-}
-/* Remove top margin and empty header space */
-.st-emotion-cache-1v0mbdj, .block-container {
-    padding-top: 0rem !important;
-    margin-top: 0 !important;
-}
-header, footer {
-    height: 0 !important;
-    min-height: 0 !important;
-    visibility: hidden;
-    display: none !important;
-}
-/* Remove top empty space and header from Streamlit */
-.st-emotion-cache-18ni7ap {
-    min-height: 0 !important;
-    height: 0 !important;
-    visibility: hidden;
-    display: none !important;
-}
-/* Remove empty space above the form card */
-div[data-testid="stVerticalBlock"] > div:first-child {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
-
-/* Fix selectbox/multiselect colors and padding */
-input, select, textarea, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
-    background: #fff !important;
-    color: #232a3d !important;
-    border-radius: 8px !important;
-    border: 1.5px solid #dbeafe !important;
-    font-weight: 500 !important;
-}
-.stSelectbox [data-baseweb="select"] .css-1dimb5e-singleValue,
-.stMultiSelect [data-baseweb="select"] .css-1dimb5e-singleValue,
-.stMultiSelect [data-baseweb="select"] .css-12a83d4 {
-    color: #232a3d !important;
-    background: transparent !important;
-}
-label, .stTextInput label, .stSelectbox label, .stMultiSelect label, .stNumberInput label {
-    color: #2563eb !important;
-    background: transparent !important;
-    font-weight: 600 !important;
-    font-size: 1em !important;
-    border: none !important;
-    padding: 0 !important;
-    margin-bottom: 7px !important;
-}
-label[style*="background"] {
-    background: transparent !important;
-}
-.stSelectbox>div, .stMultiSelect>div, .stNumberInput>div {
-    margin-bottom: 18px;
-}
-.skill-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 24px;
-    margin-bottom: 8px;
-    justify-content: flex-start;
+.stButton>button:hover {
+    background: #0fa4da;
 }
 .skill-badge {
-    background: #f4faff;
-    color: #13b7ff;
-    padding: 11px 22px;
-    border-radius: 18px;
-    font-size: 1.07em;
-    font-weight: 600;
-    margin-bottom: 2px;
-    margin-right: 0px;
-    border: none;
-    cursor: pointer;
-    transition: 0.18s;
-    outline: none;
+    display: inline-block;
+    background: #f2f8fd;
+    color: #1abcfe;
+    border-radius: 17px;
+    padding: 5px 18px;
+    margin: 3px 8px 8px 0;
+    font-weight: 500;
+    font-size: 1em;
+    border: 1px solid #e2f0fb;
 }
-.skill-badge.selected, .skill-badge:hover {
-    background: #13b7ff;
-    color: #fff;
-}
-@media (max-width: 700px) {
-    .input-card, .result-card { padding: 0 0 10px 0 !important; }
-    .form-section-title, .result-header, .form-fields, .result-main { padding: 13px 12px !important; }
-}
-.result-header {
-    background: #13b7ff;
-    color: white;
-    font-size: 1.22em;
-    padding: 16px 36px;
+.header-card {
+    background: #e8f6fe;
     border-radius: 14px 14px 0 0;
-    font-weight: 600;
+    padding: 18px 32px;
+    color: #1abcfe;
+    font-weight: 700;
+    font-size: 1.25em;
+    display: flex;
+    align-items: center;
     margin-bottom: 0;
-    display: flex; gap: 10px; align-items: center;
 }
 .result-main {
-    padding: 24px 36px 10px 36px;
-    text-align: center;
+    color: #1abcfe;
+    font-size: 2.4em;
+    font-weight: 800;
+    margin: 0.2em 0 0.1em 0;
 }
-.result-main .salary {
-    color: #13b7ff;
-    font-size: 2.9em;
-    font-weight: 700;
-    margin-bottom: 0.1em;
+.range-label {
+    color: #222;
+    font-size: 1em;
+    margin-bottom: 0.3em;
 }
-.result-range {
-    display: flex; justify-content: center; gap: 42px;
-    margin-bottom: 8px;
-    margin-top: 0.9em;
-}
-.result-range .low, .result-range .high {
-    font-size: 1.13em;
-    color: #333;
-}
-.result-range .low-label, .result-range .high-label {
-    color: #9bbbd4;
-    font-size: 0.97em;
-}
-.profile-market-cols {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 30px;
-    margin-bottom: 18px;
-}
-.profile-box, .market-box {
-    background: #fff;
-    border: 1.5px solid #f0f6fa;
-    border-radius: 12px;
-    padding: 22px 27px 16px 27px;
-    min-width: 220px;
-    flex: 1 1 0;
-}
-.profile-box h4, .market-box h4 {
-    color: #13b7ff;
-    font-size: 1.14em;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-.profile-rows, .market-rows {
-    font-size: 1.04em;
-    color: #333;
-    margin-bottom: 7px;
-}
-.icon { font-size: 1.1em; margin-right: 7px; }
-.inline-badge {
-    background: #e6fbe8;
-    color: #23b055;
-    padding: 2.5px 13px;
-    border-radius: 10px;
-    font-size: 0.96em;
-    margin-left: 7px;
+.range-value {
+    color: #1abcfe;
     font-weight: 600;
 }
-.inline-badge.blue {
-    background: #e6f2ff;
-    color: #287cf7;
+.profile-card, .insight-card {
+    background: #fcfdfe;
+    border-radius: 12px;
+    border: 1px solid #e7f3fd;
+    padding: 18px 18px 10px 18px;
+    margin: 15px 6px 10px 0;
+    font-size: 1em;
+}
+.back-btn {
+    background: #fff !important;
+    color: #1abcfe !important;
+    border: 1.5px solid #d3eafd !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    margin-bottom: 1.5em !important;
+}
+@media (max-width: 650px) {
+    .blue-card { padding: 16px 6px 16px 6px; }
+    .header-card { padding: 10px 12px; font-size: 1.1em; }
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ---- HEADER ----
-# Remove empty header/title space by not rendering a separate Streamlit title.
+# --- Main Title (top left) ---
+st.markdown("<h2 style='color:#1abcfe;font-weight:800;margin-bottom:12px;'>Salary Predictor</h2>", unsafe_allow_html=True)
 
-# ---- FORM PAGE ----
+# --- FORM PAGE ---
 if st.session_state.page == 'form':
     st.markdown("""
-    <div class="input-card" style="margin-top: 40px;">
-        <div class="form-section-title">💼 Salary Prediction Form</div>
-        <div class="form-section-subtitle">
+    <div class="blue-card">
+        <div class="header-card">
+            <span style="font-size:1.4em;margin-right:10px;">🧾</span>
+            Salary Prediction Form
+        </div>
+        <div style="color:#8a99ad;font-size:1.03em;margin-bottom:13px;">
             Please fill in your details below
         </div>
-        <div class="form-fields">
     """, unsafe_allow_html=True)
     with st.form("salary_form"):
-        cols = st.columns(2)
-        job_title = cols[0].selectbox("Job Title", label_encoders['job_title'].classes_, key="job_title")
-        years_of_experience = cols[1].number_input("Years of Experience", 0, 50, 2, key="years_exp", placeholder="e.g. 5")
-        cols2 = st.columns(2)
-        location = cols2[0].selectbox("Location", label_encoders['location'].classes_, key="loc")
-        education_level = cols2[1].selectbox("Education Level", label_encoders['education_level'].classes_, key="edu")
-        company_size = st.selectbox("Company Size", label_encoders['company_size'].classes_, key="comp_size")
-
-        # --- Skills & Technologies as badges ---
-        st.markdown('<div class="form-section-title" style="font-size:1.18em;margin-bottom:7px;margin-top:20px;"><span class="icon">&lt;/&gt;</span>Skills & Technologies</div>', unsafe_allow_html=True)
-        skills_selected = st.multiselect("", mlb.classes_, key="skills")
-        # Show badges (visual only)
-        st.markdown('<div class="skill-badges">' + ''.join(
-            [f'<span class="skill-badge{" selected" if skill in skills_selected else ""}">{skill}</span>' for skill in mlb.classes_]
-        ) + '</div>', unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown('<div class="form-label">🏢 Job Title</div>', unsafe_allow_html=True)
+            job_title = st.selectbox("", label_encoders['job_title'].classes_, key='job_title')
+        with col2:
+            st.markdown('<div class="form-label">⌛ Years of Experience</div>', unsafe_allow_html=True)
+            years_of_experience = st.number_input("", 0, 50, 2, key='yoe', placeholder="e.g. 5")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown('<div class="form-label">📍 Location</div>', unsafe_allow_html=True)
+            location = st.selectbox("", label_encoders['location'].classes_, key='location')
+        with col2:
+            st.markdown('<div class="form-label">🎓 Education Level</div>', unsafe_allow_html=True)
+            education_level = st.selectbox("", label_encoders['education_level'].classes_, key='edu')
+        st.markdown('<div class="form-label">🏢 Company Size</div>', unsafe_allow_html=True)
+        company_size = st.selectbox("", label_encoders['company_size'].classes_, key='company')
+        st.markdown('<div class="form-label" style="margin-top:8px;">&lt;/&gt; Skills & Technologies</div>', unsafe_allow_html=True)
+        # --- Custom Grid Style for Skills ---
+        skills_list = st.multiselect(
+            "",
+            options=mlb.classes_,
+            default=st.session_state.selected_skills,
+            key="skills"
+        )
+        st.session_state.selected_skills = skills_list
+        st.markdown(
+            "".join([f'<span class="skill-badge">{skill}</span>' for skill in skills_list]),
+            unsafe_allow_html=True
+        )
         submitted = st.form_submit_button("Get Salary Prediction")
         if submitted:
-            salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_selected)
+            salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_list)
             st.session_state.predicted_salary = salary
             st.session_state.user_inputs = {
                 'Position': job_title,
                 'Experience': years_of_experience,
                 'Location': location,
                 'Education': education_level,
-                'Skills': skills_selected
+                'Company Size': company_size,
+                'Skills': skills_list,
             }
-            go_to_result()
+            st.session_state.page = 'result'
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ---- RESULT PAGE ----
+# --- RESULT PAGE ---
 elif st.session_state.page == 'result':
-    salary = st.session_state.predicted_salary
-    low = salary * 0.85
-    high = salary * 1.15
-    user = st.session_state.user_inputs
-
+    st.button("← Back to Form", on_click=lambda: st.session_state.update(page='form'), key="back_form", help="Back to input form", type="secondary")
     st.markdown("""
-        <a href="#" onclick="window.location.reload(); return false;" style="text-decoration:none;">
-            <button style="margin-bottom:18px;padding:7px 18px;border-radius:7px;background:#fff;border:1px solid #e6f2ff;cursor:pointer;font-size:1em;">
-                ← Back to Form
-            </button>
-        </a>
-    """, unsafe_allow_html=True)
-    st.markdown(
-        f"""
-    <div class="result-card">
-        <div class="result-header">
-            <span style="font-size:1.22em;">🪙</span>
+    <div class="blue-card" style="max-width:600px;margin-top:0;">
+        <div class="header-card" style="background:#1abcfe;color:#fff;">
+            <span style="font-size:1.4em;margin-right:10px;">💰</span>
             Salary Prediction Result
         </div>
-        <div class="result-main">
-            <div class="salary">${salary:,.0f}</div>
-            <div style="color:#9bbbd4;font-size:1.14em;margin-bottom:7px;">Annual Salary Estimate</div>
-            <div class="result-range">
-                <div>
-                    <div class="low">${low:,.0f}</div>
-                    <div class="low-label">Low Range</div>
-                </div>
-                <div>
-                    <div class="high">${high:,.0f}</div>
-                    <div class="high-label">High Range</div>
-                </div>
-            </div>
-        </div>
-        <div class="profile-market-cols">
-            <div class="profile-box">
-                <h4><span class="icon">👤</span>Your Profile</h4>
-                <div class="profile-rows"><span class="icon">💼</span>Position <span style="float:right;font-weight:600;">{user.get('Position','')}</span></div>
-                <div class="profile-rows"><span class="icon">⏱️</span>Experience <span style="float:right;font-weight:600;">{user.get('Experience','')} years</span></div>
-                <div class="profile-rows"><span class="icon">📍</span>Location <span style="float:right;font-weight:600;">{user.get('Location','')}</span></div>
-                <div class="profile-rows"><span class="icon">🎓</span>Education <span style="float:right;font-weight:600;">{user.get('Education','')}</span></div>
-                <div class="profile-rows" style="margin-top:10px;">
-                    <div style="font-size:0.96em;color:#9bbbd4;margin-bottom:3px;">Skills</div>
-                    <div>""" + ''.join([f'<span class="skill-badge selected" style="margin:0 6px 6px 0;">{s}</span>' for s in user.get('Skills', [])]) + """</div>
-                </div>
-            </div>
-            <div class="market-box">
-                <h4><span class="icon">📈</span>Market Insights</h4>
-                <div class="market-rows"><b>Industry Average:</b> <span style="float:right;">$97,888</span></div>
-                <div class="market-rows"><b>Top 10% Earners:</b> <span style="float:right;">$154,280</span></div>
-                <div class="market-rows"><b>Growth Potential:</b> <span class="inline-badge">High</span></div>
-                <div class="market-rows"><b>Demand Level:</b> <span class="inline-badge blue">Very High</span></div>
-            </div>
-        </div>
-        <form action="" method="post">
-            <button onclick="window.location.reload(); return false;" type="button" style="background:#38c6ff;color:white;padding:13px 0;font-size:1.1em;border:none;border-radius:8px;width:250px;margin:30px auto 0 auto;display:block;cursor:pointer;">
-                Try Another Prediction
-            </button>
-        </form>
-    </div>
-    """,
-        unsafe_allow_html=True
+    """, unsafe_allow_html=True)
+    st.markdown(
+        f"""<div style="text-align:center;margin:18px 0 12px 0;">
+            <div class="result-main">${st.session_state.predicted_salary:,.0f}</div>
+            <div style="color:#8a99ad;font-size:1.12em;margin-bottom:0.4em;">Annual Salary Estimate</div>
+            <span class="range-value">${st.session_state.predicted_salary*0.85:,.0f}</span>
+            <span class="range-label">Low Range</span> &nbsp;&nbsp;
+            <span class="range-value">${st.session_state.predicted_salary*1.15:,.0f}</span>
+            <span class="range-label">High Range</span>
+        </div>""",
+        unsafe_allow_html=True,
     )
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+        st.markdown('<b>👤 Your Profile</b><br>', unsafe_allow_html=True)
+        ui = st.session_state.user_inputs
+        st.markdown(f"""<ul style="margin-bottom:0.7em;">
+            <li><b>🏢 Position:</b> {ui['Position']}</li>
+            <li><b>⌛ Experience:</b> {ui['Experience']} years</li>
+            <li><b>📍 Location:</b> {ui['Location']}</li>
+            <li><b>🎓 Education:</b> {ui['Education']}</li>
+            <li><b>🏢 Company Size:</b> {ui['Company Size']}</li>
+        </ul>""", unsafe_allow_html=True)
+        if ui['Skills']:
+            st.markdown('<b>Skills</b><br>', unsafe_allow_html=True)
+            st.markdown(
+                "".join([f'<span class="skill-badge">{skill}</span>' for skill in ui['Skills']]),
+                unsafe_allow_html=True
+            )
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="insight-card">', unsafe_allow_html=True)
+        st.markdown('<b>📈 Market Insights</b><br>', unsafe_allow_html=True)
+        st.markdown("""
+            <ul style="margin-bottom:0.7em;">
+                <li><b>Industry Average:</b> $55,200</li>
+                <li><b>Top 10% Earners:</b> $87,000</li>
+                <li><b>Growth Potential:</b> <span style='background:#d5f6e3;color:#18aa4b;border-radius:8px;padding:2px 10px;'>High</span></li>
+                <li><b>Demand Level:</b> <span style='background:#e1eafd;color:#3a87f2;border-radius:8px;padding:2px 10px;'>Very High</span></li>
+            </ul>
+        """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div style="text-align:center;margin-top:20px;"><button class="stButton" style="width:280px;max-width:90%;" onclick="window.location.reload()">Try Another Prediction</button></div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown("</div>", unsafe_allow_html=True)
