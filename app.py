@@ -91,27 +91,29 @@ with st.sidebar:
     st.title("Salary Predictor")
     st.caption("Estimate your market value instantly. Enter your profile, skills and get an AI-powered salary prediction.")
     st.markdown("---")
-    
-    # Context-aware options
-    if st.session_state.page == 'result':
-        st.markdown("### Actions")
-        if st.button("🔄 Try Again"):
-            st.session_state.page = 'form'
-        st.download_button(
-            label="⬇️ Download Result",
-            data=f"Predicted Salary: ${st.session_state.predicted_salary:,.0f}\nDetails: {st.session_state.user_inputs}",
-            file_name="salary_prediction.txt"
-        )
-        st.markdown("---")
-        st.info("You can try again or download your result above.")
-    else:
-        st.info("**Pro tip:** Select your actual skills for the best results.")
-
+    # Sidebar Navigation
+    st.markdown("### 🧭 Navigation")
+    selected = st.radio(
+        "Go to",
+        options=["Home", "Result"],
+        index=0 if st.session_state.page == "form" else 1,
+        key="sidebar_nav",
+        label_visibility="collapsed",
+        horizontal=False,
+    )
+    # Update main page state on sidebar navigation
+    if selected == "Home" and st.session_state.page != "form":
+        st.session_state.page = "form"
+        st.experimental_rerun()
+    elif selected == "Result" and st.session_state.page != "result":
+        st.session_state.page = "result"
+        st.experimental_rerun()
+    st.markdown("---")
+    st.info("**Pro tip:** Select your actual skills for the best results.")
     st.markdown(
         "<div style='font-size: 0.95em; color: #888;'>Made with ❤️ using Streamlit.</div>",
         unsafe_allow_html=True
     )
-
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
     # New header: professional, in a colored box, no empty white box.
