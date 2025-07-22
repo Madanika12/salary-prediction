@@ -44,53 +44,97 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     return round(predicted, 2)
 
 # ------------------- CSS Styling -------------------
+import streamlit as st
+
+# Custom CSS styling
 st.markdown("""
-<style>
-body {
-    background-color: #f5f7fa;
-}
-.stApp {
-    background-color: #f5f7fa;
-}
-.stButton>button {
-    background: linear-gradient(to right, #00c6ff, #0072ff);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.6em 1.5em;
-    font-weight: bold;
-    transition: 0.3s ease;
-}
-.stButton>button:hover {
-    background: linear-gradient(to right, #0072ff, #00c6ff);
-    transform: scale(1.05);
-}
-.card {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    margin-bottom: 25px;
-}
-.result-card {
-    background: linear-gradient(to right, #00c6ff, #0072ff);
-    color: white;
-    padding: 30px;
-    border-radius: 14px;
-    text-align: center;
-    margin-bottom: 30px;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-    animation: fadeIn 1s ease-in-out;
-}
-h1, h2, h4 {
-    font-family: 'Segoe UI', sans-serif;
-}
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-</style>
+    <style>
+        .main {
+            background-color: #ffffff;
+        }
+        .form-container {
+            background-color: #f8fbfd;
+            border-radius: 10px;
+            padding: 2rem;
+            width: 70%;
+            margin: auto;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.05);
+        }
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #00AEEF;
+            margin-bottom: 0.3rem;
+        }
+        .form-subtitle {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+        label {
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #00AEEF !important;
+            margin-bottom: 0.2rem !important;
+        }
+        .stButton>button {
+            background-color: #82d8ff;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            border-radius: 8px;
+            padding: 10px 0px;
+            margin-top: 1.5rem;
+        }
+        .stButton>button:hover {
+            background-color: #59c6f9;
+        }
+        .block-container {
+            padding-top: 2rem;
+        }
+    </style>
 """, unsafe_allow_html=True)
+
+st.markdown("<h1 style='color:#00AEEF;'>Salary Predictor</h1>", unsafe_allow_html=True)
+
+with st.form("salary_form"):
+    st.markdown("<div class='form-container'>", unsafe_allow_html=True)
+    st.markdown("<div class='form-title'>💼 Salary Prediction Form</div>", unsafe_allow_html=True)
+    st.markdown("<div class='form-subtitle'>Please fill in your details below</div>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("**Job Title**", unsafe_allow_html=True)
+        job_title = st.selectbox("", ["Select your job title", "Software Engineer", "Data Scientist", "Product Manager"])
+
+    with col2:
+        st.markdown("**Years of Experience**", unsafe_allow_html=True)
+        years_of_experience = st.number_input("", 0, 50, 2)
+
+    col3, col4 = st.columns(2)
+    with col3:
+        st.markdown("**Location**", unsafe_allow_html=True)
+        location = st.selectbox("", ["Select your location", "Bangalore", "Hyderabad", "Pune"])
+
+    with col4:
+        st.markdown("**Education Level**", unsafe_allow_html=True)
+        education_level = st.selectbox("", ["Select education level", "Bachelors", "Masters", "PhD"])
+
+    st.markdown("**Company Size**", unsafe_allow_html=True)
+    company_size = st.selectbox("", ["Select company size", "Startup", "Mid-size", "Enterprise"])
+
+    st.markdown("**Skills & Technologies**", unsafe_allow_html=True)
+    skills = st.multiselect("", ["JavaScript", "Python", "React", "Node.js", "AWS", "Docker",
+                                 "Machine Learning", "SQL", "Data Analysis",
+                                 "Project Management", "Leadership", "Sales",
+                                 "Design", "Marketing"])
+
+    submitted = st.form_submit_button("Get Salary Prediction")
+
+    if submitted:
+        st.success("Prediction logic goes here!")
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
