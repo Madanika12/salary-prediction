@@ -42,6 +42,9 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     return round(predicted, 2)
 
 # ----------- Custom CSS -----------
+# ... (keep your imports and previous code unchanged above)
+
+# ----------- Custom CSS -----------
 st.markdown("""
 <style>
 body { background: #101217; }
@@ -51,6 +54,7 @@ body { background: #101217; }
     padding: 0;
     border-radius: 22px;
     text-align: center;
+    position: relative;
 }
 .header-box {
     background: linear-gradient(90deg, #005bea 0%, #00c6fb 100%);
@@ -58,6 +62,21 @@ body { background: #101217; }
     padding: 32px 0 25px 0;
     box-shadow: 0 8px 40px 0 rgba(0,40,120,0.13);
     margin-bottom: 0;
+    border: 1.5px solid #ddefff;
+    position: relative;
+}
+.header-box .page-title {
+    position: absolute;
+    left: 32px;
+    top: 20px;
+    color: #e6f4ff;
+    font-size: 1em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    opacity: 0.85;
+    margin: 0;
+    padding: 0;
+    text-align: left;
 }
 .header-title {
     color: #fff;
@@ -81,15 +100,45 @@ body { background: #101217; }
     .header-box { padding: 16px 0 12px 0; }
     .header-title { font-size: 1.25em; }
     .header-desc { font-size: 0.99em; }
+    .header-box .page-title { left: 12px; top: 8px; font-size: 0.93em; }
 }
 </style>
 """, unsafe_allow_html=True)
+
+# ----------- Sidebar (unchanged) -----------
+with st.sidebar:
+    st.image("https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-salary-global-business-flatart-icons-outline-flatarticons.png", width=50)
+    st.title("Salary Predictor")
+    st.caption("Estimate your market value instantly. Enter your profile, skills and get an AI-powered salary prediction.")
+    st.markdown("---")
+    st.markdown("### 🧭 Navigation")
+    selected = st.radio(
+        "Go to",
+        options=["Home", "Result"],
+        index=0 if st.session_state.page == "form" else 1,
+        key="sidebar_nav",
+        label_visibility="collapsed",
+        horizontal=False,
+    )
+    if selected == "Home" and st.session_state.page != "form":
+        st.session_state.page = "form"
+        st.experimental_rerun()
+    elif selected == "Result" and st.session_state.page != "result":
+        st.session_state.page = "result"
+        st.experimental_rerun()
+    st.markdown("---")
+    st.info("**Pro tip:** Select your actual skills for the best results.")
+    st.markdown(
+        "<div style='font-size: 0.95em; color: #888;'>Made with ❤️ using Streamlit.</div>",
+        unsafe_allow_html=True
+    )
+
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
-    # New header: professional, in a colored box, no empty white box.
     st.markdown("""
     <div class="header-main">
       <div class="header-box">
+        <div class="page-title">Salary Predictor</div>
         <div class="header-title">Salary Prediction Tool</div>
         <div class="header-desc">
             Get your personalized salary estimate instantly.<br>
@@ -102,11 +151,11 @@ if st.session_state.page == 'form':
     with st.form("salary_form"):
         with st.container():
             st.markdown("<div class='card'>", unsafe_allow_html=True)
-            job_title = st.selectbox("🏢Job Title", label_encoders['job_title'].classes_)
-            years_of_experience = st.number_input("⏳Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
-            location = st.selectbox("📍Location", label_encoders['location'].classes_)
-            education_level = st.selectbox("🎓Education Level", label_encoders['education_level'].classes_)
-            company_size = st.selectbox("🏢Company Size", label_encoders['company_size'].classes_)
+            job_title = st.selectbox("Job Title", label_encoders['job_title'].classes_)
+            years_of_experience = st.number_input("Years of Experience", 0, 50, 2, help="Enter total years of professional experience.")
+            location = st.selectbox("Location", label_encoders['location'].classes_)
+            education_level = st.selectbox("Education Level", label_encoders['education_level'].classes_)
+            company_size = st.selectbox("Company Size", label_encoders['company_size'].classes_)
             skills_list = st.multiselect(
                 "Select Your Skills",
                 mlb.classes_,
