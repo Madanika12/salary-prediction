@@ -51,6 +51,7 @@ body {
 }
 .stApp {
     background-color: #f5f7fa;
+    color: #007fff; /* Light blue for default text */
 }
 .stButton>button {
     background: linear-gradient(to right, #00c6ff, #0072ff);
@@ -71,6 +72,7 @@ body {
     padding: 25px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     margin-bottom: 25px;
+    color: #007fff; /* Light blue inside cards */
 }
 .result-card {
     background: linear-gradient(to right, #00c6ff, #0072ff);
@@ -84,6 +86,7 @@ body {
 }
 h1, h2, h4 {
     font-family: 'Segoe UI', sans-serif;
+    color: #007fff !important;
 }
 @keyframes fadeIn {
   from {opacity: 0;}
