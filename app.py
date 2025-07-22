@@ -36,122 +36,65 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
 
 # --- Custom CSS based on reference images for a simple, modern, not-large-text UI ---
 st.markdown("""
-<style>
-body, .stApp {
-    background: linear-gradient(135deg, #f7fafd 0%, #e9f1f7 100%) !important;
-}
-.center-card {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 6px 24px 0 rgba(20,40,120,0.10);
-    padding: 28px 28px 18px 28px;
-    margin: 40px auto 0 auto;
-    width: 100%;
-    max-width: 520px;
-}
-.heading-main {
-    color: #1abcfe;
-    text-align: center;
-    font-size: 1.38em;
-    font-weight: 800;
-    margin-bottom: 2px;
-    letter-spacing: 0.02em;
-}
-.heading-sub {
-    color: #7b8998;
-    text-align: center;
-    margin-bottom: 22px;
-    margin-top: 0;
-    font-size: 0.98em;
-}
-.form-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 13px;
-}
-.form-col {
-    flex: 1;
-}
-.form-label {
-    font-weight: 600;
-    color: #1abcfe;
-    font-size: 0.98em;
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
-    gap: 6px;
-}
-.form-icon {
-    font-size: 1.05em;
-    margin-right: 4px;
-}
-.stSelectbox, .stNumberInput, .stMultiSelect, .stTextInput input {
-    background: #fff !important;
-    color: #222 !important;
-    border-radius: 7px !important;
-    border: 1.2px solid #e3e9f0 !important;
-    font-size: 0.98em !important;
-    min-height: 38px;
-}
-.stNumberInput input { color: #222 !important; }
-.stMultiSelect>div>div {
-    background: #fff !important;
-    color: #222 !important;
-}
-hr {
-    border: none;
-    border-top: 1.3px solid #e3e9f0;
-    margin: 18px 0 14px 0;
-}
-.skills-label {
-    font-weight: 700;
-    color: #1abcfe;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.96em;
-}
-.skills-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px 13px;
-    margin-bottom: 8px;
-}
-.skill-pill {
-    background: #eaf4fa;
-    color: #19a8e8;
-    border-radius: 14px;
-    padding: 5px 15px;
-    font-size: 0.96em;
-    font-weight: 600;
-    border: none;
-    pointer-events: none;
-}
-.predict-btn button {
-    width: 100%;
-    background: linear-gradient(90deg,#1abcfe 60%,#15e0ff 100%);
-    color: #fff;
-    font-weight: 700;
-    font-size: 1em;
-    border: none;
-    border-radius: 7px;
-    padding: 0.7em 0;
-    margin-top: 12px;
-    transition: 0.16s;
-    box-shadow: 0 3px 12px rgba(0,180,255,0.09);
-}
-.predict-btn button:hover {
-    background: linear-gradient(90deg,#15e0ff 60%,#1abcfe 100%);
-    color: #fff;
-}
-@media (max-width: 700px) {
-    .center-card { padding: 12px 2vw 12px 2vw; }
-    .form-row { flex-direction: column; gap: 6px;}
-}
-</style>
-""", unsafe_allow_html=True)
+    <style>
+    .main-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+        padding: 30px 32px 22px 32px;
+        max-width: 540px;
+        margin: 48px auto;
+    }
+    .title {
+        color: #00b6ff;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    .desc {
+        color: #444;
+        text-align: center;
+        margin-bottom: 26px;
+        font-size: 1.08rem;
+    }
+    .section-label {
+        font-weight: 500;
+        margin-top: 8px;
+        margin-bottom: 6px;
+        color: #2574a9;
+    }
+    .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em 1em;
+        margin-top: 8px;
+        margin-bottom: 18px;
+    }
+    .skill-chip {
+        background: #e9f4fb;
+        color: #1796d2;
+        border-radius: 7px;
+        padding: 4px 13px;
+        font-size: 1em;
+        margin-bottom: 5px;
+    }
+    .stButton>button {
+        background: linear-gradient(to right, #00c6ff, #0072ff);
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        padding: 0.7em 0;
+        font-weight: 500;
+        font-size: 1.08em;
+        width: 100%;
+        margin-top: 12px;
+    }
+    .stButton>button:hover {
+        background: linear-gradient(to right, #0072ff, #00c6ff);
+    }
+    </style>
+""", unsafe_allow_html=T
 
 # -------- FORM PAGE --------
 if st.session_state.page == 'form':
