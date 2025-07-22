@@ -4,4 +4,3 @@ pandas
 numpy
 joblib
 xgboost
-run main.py
