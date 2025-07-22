@@ -44,8 +44,7 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
 # ----------- Custom CSS -----------
 st.markdown("""
 <style>
-body { background: #f5f8fb; }
-.st-emotion-cache-1v0mbdj { padding: 2rem 1.7rem; }
+body { background: #101217; }
 .stButton>button {
     background: linear-gradient(90deg,#005bea,#00c6fb);
     color: white;
@@ -62,11 +61,11 @@ body { background: #f5f8fb; }
     background: linear-gradient(90deg,#00c6fb,#005bea);
     box-shadow: 0 4px 16px rgba(0,55,255,0.13);
 }
-.card {
+.card, .profile-card, .insight-card {
     background: #fff;
-    border-radius: 15px;
-    padding: 28px 28px 22px 28px;
-    box-shadow: 0 4px 16px rgba(0, 80, 255, 0.06);
+    border-radius: 20px;
+    padding: 24px 24px 18px 24px;
+    box-shadow: 0 4px 16px rgba(0, 80, 255, 0.07);
     margin-bottom: 18px;
 }
 .result-card {
@@ -81,9 +80,44 @@ body { background: #f5f8fb; }
 input, select, textarea {
     border-radius: 8px !important;
 }
-@media (max-width: 600px) {
-    .result-card, .card { border-radius: 8px; padding: 15px 8px 12px 8px; }
-    .st-emotion-cache-1v0mbdj { padding: 0.5rem 0.3rem; }
+.profile-details {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 1.08em;
+}
+.profile-details b {
+    color: #fff;
+}
+.insight-list {
+    margin-top: 18px;
+    color: #222;
+    font-size: 1.07em;
+}
+.insight-list .insight-label {
+    color: #7a7a7a;
+    font-weight: 500;
+}
+.insight-list .insight-value {
+    color: #111;
+    font-weight: 600;
+}
+.insight-list .high { color: #1aa260; font-weight: bold;}
+.insight-list .veryhigh { color: #1a56e0; font-weight: bold;}
+/* Icon and heading in cards */
+.card-head {
+    display: flex;
+    align-items: center;
+    font-size: 1.08em;
+    font-weight: 700;
+    color: #1abcfe;
+    margin-bottom: 10px;
+}
+.card-head .icon {
+    font-size: 1.25em;
+    margin-right: 10px;
+}
+@media (max-width: 900px) {
+    .card, .profile-card, .insight-card { padding: 14px 8px 10px 8px; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -103,7 +137,6 @@ with st.sidebar:
 # ---------------------- FORM PAGE ---------------------- #
 if st.session_state.page == 'form':
     st.markdown("<div class='result-card'><h2>💼 Salary Prediction Tool</h2><p style='margin-top: -12px;'>Get your personalized salary estimate</p></div>", unsafe_allow_html=True)
-
     with st.form("salary_form"):
         with st.container():
             st.markdown("<div class='card'>", unsafe_allow_html=True)
@@ -134,6 +167,34 @@ if st.session_state.page == 'form':
 elif st.session_state.page == 'result':
     st.button("← Back to Form", on_click=go_back_to_form)
 
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("""
+        <div class="profile-card">
+            <div class="card-head"><span class="icon">🎯</span>Your Profile</div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown(
+            f"""<div class='profile-details'>
+<b>Position:</b> {st.session_state.user_inputs.get('Position', '')}<br>
+<b>Experience:</b> {st.session_state.user_inputs.get('Experience', '')}<br>
+<b>Location:</b> {st.session_state.user_inputs.get('Location', '')}<br>
+<b>Education:</b> {st.session_state.user_inputs.get('Education', '')}
+</div>
+""", unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+        <div class="insight-card">
+            <div class="card-head"><span class="icon">📊</span>Market Insights</div>
+            <div class="insight-list">
+                <div><span class="insight-label">Industry Average:</span> <span class="insight-value">$55,200</span></div>
+                <div><span class="insight-label">Top 10% Earners:</span> <span class="insight-value">$87,000</span></div>
+                <div><span class="insight-label">Growth Potential:</span> <span class="insight-value high">High</span></div>
+                <div><span class="insight-label">Demand Level:</span> <span class="insight-value veryhigh">Very High</span></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
     st.markdown(f"""
         <div class="result-card">
             <h2>💲 Salary Prediction</h2>
@@ -143,22 +204,3 @@ elif st.session_state.page == 'result':
                <b>${st.session_state.predicted_salary * 1.15:,.0f}</b> <span style="color:#ffe4c2;">High</span></p>
         </div>
     """, unsafe_allow_html=True)
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("<div class='card'><h4>🎯 Your Profile</h4>", unsafe_allow_html=True)
-        for key, value in st.session_state.user_inputs.items():
-            st.markdown(f"<p><b>{key}:</b> {value}</p>", unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-        <div class='card'>
-            <h4>📊 Market Insights</h4>
-            <p><b>Industry Average:</b> $55,200</p>
-            <p><b>Top 10% Earners:</b> $87,000</p>
-            <p><b>Growth Potential:</b> <span style='color:green;'>High</span></p>
-            <p><b>Demand Level:</b> <span style='color:blue;'>Very High</span></p>
-        </div>
-        """, unsafe_allow_html=True)
