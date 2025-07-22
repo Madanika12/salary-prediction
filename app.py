@@ -2,7 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 
-# --- Load model and encoders ---
+# --- Load model and encoders (replace with your correct paths if needed) ---
 model = joblib.load('best_salary_model.pkl')
 label_encoders = joblib.load('label_encoders.pkl')
 mlb = joblib.load('skills_mlb.pkl')
@@ -14,8 +14,6 @@ if 'predicted_salary' not in st.session_state:
     st.session_state.predicted_salary = None
 if 'user_inputs' not in st.session_state:
     st.session_state.user_inputs = {}
-if 'skills_selected' not in st.session_state:
-    st.session_state.skills_selected = []
 
 def go_to_result():
     st.session_state.page = 'result'
@@ -42,11 +40,12 @@ def predict_salary(job_title, years_of_experience, location, education_level, co
     predicted = model.predict(final_input)[0]
     return round(predicted, 2)
 
-# --- Custom CSS ---
+# --- Custom CSS for look, contrast, and removing empty spaces ---
 st.markdown("""
 <style>
 body { background: #f9fbfd; }
 .stApp { background: #f9fbfd; }
+h1, h2, h3, h4, h5, h6 { color: #13b7ff; font-weight: 700; }
 .stButton>button, .stDownloadButton>button {
     background: #38c6ff !important;
     color: white !important;
@@ -68,6 +67,7 @@ body { background: #f9fbfd; }
     margin: 0 auto 30px auto;
     max-width: 620px;
 }
+.input-card { padding: 0px 0 30px 0 !important; }
 .form-section-title {
     background: #f4faff;
     color: #13b7ff;
@@ -77,9 +77,7 @@ body { background: #f9fbfd; }
     padding: 22px 36px 12px 36px;
     margin-bottom: 8px;
     letter-spacing: 0.02em;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 10px;
 }
 .form-section-subtitle {
     color: #9bbbd4;
@@ -90,22 +88,72 @@ body { background: #f9fbfd; }
 .form-fields {
     padding: 0 36px;
 }
+/* Remove top margin and empty header space */
+.st-emotion-cache-1v0mbdj, .block-container {
+    padding-top: 0rem !important;
+    margin-top: 0 !important;
+}
+header, footer {
+    height: 0 !important;
+    min-height: 0 !important;
+    visibility: hidden;
+    display: none !important;
+}
+/* Remove top empty space and header from Streamlit */
+.st-emotion-cache-18ni7ap {
+    min-height: 0 !important;
+    height: 0 !important;
+    visibility: hidden;
+    display: none !important;
+}
+/* Remove empty space above the form card */
+div[data-testid="stVerticalBlock"] > div:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Fix selectbox/multiselect colors and padding */
+input, select, textarea, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
+    background: #fff !important;
+    color: #232a3d !important;
+    border-radius: 8px !important;
+    border: 1.5px solid #dbeafe !important;
+    font-weight: 500 !important;
+}
+.stSelectbox [data-baseweb="select"] .css-1dimb5e-singleValue,
+.stMultiSelect [data-baseweb="select"] .css-1dimb5e-singleValue,
+.stMultiSelect [data-baseweb="select"] .css-12a83d4 {
+    color: #232a3d !important;
+    background: transparent !important;
+}
+label, .stTextInput label, .stSelectbox label, .stMultiSelect label, .stNumberInput label {
+    color: #2563eb !important;
+    background: transparent !important;
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 7px !important;
+}
+label[style*="background"] {
+    background: transparent !important;
+}
 .stSelectbox>div, .stMultiSelect>div, .stNumberInput>div {
     margin-bottom: 18px;
 }
 .skill-badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px 18px;
+    gap: 12px 24px;
     margin-bottom: 8px;
-    margin-top: 12px;
+    justify-content: flex-start;
 }
 .skill-badge {
     background: #f4faff;
     color: #13b7ff;
-    padding: 10px 22px;
+    padding: 11px 22px;
     border-radius: 18px;
-    font-size: 1.08em;
+    font-size: 1.07em;
     font-weight: 600;
     margin-bottom: 2px;
     margin-right: 0px;
@@ -113,12 +161,14 @@ body { background: #f9fbfd; }
     cursor: pointer;
     transition: 0.18s;
     outline: none;
-    border: 2px solid #f4faff;
 }
 .skill-badge.selected, .skill-badge:hover {
     background: #13b7ff;
     color: #fff;
-    border: 2px solid #13b7ff;
+}
+@media (max-width: 700px) {
+    .input-card, .result-card { padding: 0 0 10px 0 !important; }
+    .form-section-title, .result-header, .form-fields, .result-main { padding: 13px 12px !important; }
 }
 .result-header {
     background: #13b7ff;
@@ -193,46 +243,17 @@ body { background: #f9fbfd; }
     background: #e6f2ff;
     color: #287cf7;
 }
-@media (max-width: 700px) {
-    .input-card, .result-card { padding: 0 0 10px 0 !important; }
-    .form-section-title, .result-header, .form-fields, .result-main { padding: 13px 12px !important; }
-    .profile-market-cols { flex-direction: column; gap: 10px; }
-    .profile-box, .market-box { min-width: 0; padding: 17px 7px 7px 7px; }
-}
-/* Fix input field and select colors for contrast */
-input, select, textarea, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
-    background: #fff !important;
-    color: #232a3d !important;
-    border-radius: 8px !important;
-    border: 1.5px solid #dbeafe !important;
-    font-weight: 500 !important;
-}
-.stSelectbox [data-baseweb="select"] .css-1dimb5e-singleValue,
-.stMultiSelect [data-baseweb="select"] .css-1dimb5e-singleValue,
-.stMultiSelect [data-baseweb="select"] .css-12a83d4 {
-    color: #232a3d !important;
-    background: transparent !important;
-}
-label, .stTextInput label, .stSelectbox label, .stMultiSelect label, .stNumberInput label {
-    color: #2563eb !important;
-    background: transparent !important;
-    font-weight: 600 !important;
-    font-size: 1em !important;
-    border: none !important;
-    padding: 0 !important;
-    margin-bottom: 7px !important;
-}
-label[style*="background"] {
-    background: transparent !important;
-}
 </style>
 """, unsafe_allow_html=True)
+
+# ---- HEADER ----
+# Remove empty header/title space by not rendering a separate Streamlit title.
 
 # ---- FORM PAGE ----
 if st.session_state.page == 'form':
     st.markdown("""
-    <div class="input-card">
-        <div class="form-section-title"><span style="font-size:1.2em;">💼</span> Salary Prediction Form</div>
+    <div class="input-card" style="margin-top: 40px;">
+        <div class="form-section-title">💼 Salary Prediction Form</div>
         <div class="form-section-subtitle">
             Please fill in your details below
         </div>
@@ -247,49 +268,30 @@ if st.session_state.page == 'form':
         education_level = cols2[1].selectbox("Education Level", label_encoders['education_level'].classes_, key="edu")
         company_size = st.selectbox("Company Size", label_encoders['company_size'].classes_, key="comp_size")
 
-        # --- Skills & Technologies: dropdown and clickable badges ---
+        # --- Skills & Technologies as badges ---
         st.markdown('<div class="form-section-title" style="font-size:1.18em;margin-bottom:7px;margin-top:20px;"><span class="icon">&lt;/&gt;</span>Skills & Technologies</div>', unsafe_allow_html=True)
-        
-        # Dropdown for skills (optional)
-        dropdown_selected = st.multiselect(
-            "Choose options", mlb.classes_, default=st.session_state.skills_selected, key="skills_dropdown"
-        )
-
-        # Badge selector (clickable using Streamlit buttons in columns)
-        badge_cols = st.columns(4)
-        skill_badge_clicked = [False] * len(mlb.classes_)
-        for i, skill in enumerate(mlb.classes_):
-            col = badge_cols[i % 4]
-            if skill in st.session_state.skills_selected:
-                if col.button(skill, key=f"badge_{skill}", help="Click to deselect", use_container_width=True):
-                    st.session_state.skills_selected.remove(skill)
-            else:
-                if col.button(skill, key=f"badge_{skill}", help="Click to select", use_container_width=True):
-                    st.session_state.skills_selected.append(skill)
-        # Sync dropdown and badge selections
-        if set(dropdown_selected) != set(st.session_state.skills_selected):
-            st.session_state.skills_selected = dropdown_selected
-
+        skills_selected = st.multiselect("", mlb.classes_, key="skills")
+        # Show badges (visual only)
+        st.markdown('<div class="skill-badges">' + ''.join(
+            [f'<span class="skill-badge{" selected" if skill in skills_selected else ""}">{skill}</span>' for skill in mlb.classes_]
+        ) + '</div>', unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
         submitted = st.form_submit_button("Get Salary Prediction")
         if submitted:
-            # Make sure to use only unique and sorted skills
-            skills = sorted(list(set(st.session_state.skills_selected)))
-            salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills)
+            salary = predict_salary(job_title, years_of_experience, location, education_level, company_size, skills_selected)
             st.session_state.predicted_salary = salary
             st.session_state.user_inputs = {
                 'Position': job_title,
                 'Experience': years_of_experience,
                 'Location': location,
                 'Education': education_level,
-                'Skills': skills
+                'Skills': skills_selected
             }
             go_to_result()
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ---- RESULT PAGE ----
 elif st.session_state.page == 'result':
-    # Salary, low and high range
     salary = st.session_state.predicted_salary
     low = salary * 0.85
     high = salary * 1.15
